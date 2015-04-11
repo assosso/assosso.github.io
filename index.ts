@@ -48,17 +48,17 @@ module Assosso {
     leftButton: Phaser.Key;
 
     start() {
-      this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso',
-       { preload: this.preload, create: this.create, update: this.update, render: this.render });
+      this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso', {
+        preload: this.preload.bind(this),
+        create: this.create.bind(this),
+        update: this.update.bind(this),
+        render: this.render.bind(this)
+      });
      }
 
     preload() {
-
       this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130);
       this.game.load.spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222);
-
-      this.game.load.image('background', 'background2.png');
-
     }
 
     create() {
@@ -83,9 +83,9 @@ module Assosso {
     update() {
 
       // this.game.physics.arcade.collide(this.player, this.layer);
-      this.game.camera.x = this.player.x - 300;
+      this.game.camera.x = this.monster.x + 20;
 
-      this.player.body.velocity.x = monsterSpeed;
+      this.player.body.velocity.x = monsterSpeed * 0.9;
 
       if (this.player.body.onFloor()) {
         this.player.animations.play('right');
@@ -106,7 +106,7 @@ module Assosso {
 
     render () {
 
-      // this.game.debug.text(this.game.time.physicsElapsed, 32, 32);
+      // this.game.debug.text(this.player.body.onFloor(), 32, 32);
       // this.game.debug.body(this.player);
       // this.game.debug.bodyInfo(this.player, 16, 24);
 

@@ -31,12 +31,16 @@ var Assosso;
             this.jumpTimer = 0;
         }
         AssossoGame.prototype.start = function () {
-            this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso', { preload: this.preload, create: this.create, update: this.update, render: this.render });
+            this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso', {
+                preload: this.preload.bind(this),
+                create: this.create.bind(this),
+                update: this.update.bind(this),
+                render: this.render.bind(this)
+            });
         };
         AssossoGame.prototype.preload = function () {
             this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130);
             this.game.load.spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222);
-            this.game.load.image('background', 'background2.png');
         };
         AssossoGame.prototype.create = function () {
             this.game.world.setBounds(0, 0, 24000, 600);
@@ -51,8 +55,8 @@ var Assosso;
             this.monster = createMonster(this.game);
         };
         AssossoGame.prototype.update = function () {
-            this.game.camera.x = this.player.x - 300;
-            this.player.body.velocity.x = monsterSpeed;
+            this.game.camera.x = this.monster.x + 20;
+            this.player.body.velocity.x = monsterSpeed * 0.9;
             if (this.player.body.onFloor()) {
                 this.player.animations.play('right');
             }
@@ -68,7 +72,7 @@ var Assosso;
             }
         };
         AssossoGame.prototype.render = function () {
-            // this.game.debug.text(this.game.time.physicsElapsed, 32, 32);
+            // this.game.debug.text(this.player.body.onFloor(), 32, 32);
             // this.game.debug.body(this.player);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
