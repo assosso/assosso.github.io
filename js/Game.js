@@ -22,6 +22,7 @@ var Assosso;
     var lampDistance = 300;
     var lampFrameOffsets = [0, 3, 0, -2];
     var obstacleInterval = 300;
+    var obstacleVariation = 100;
     function createPlayer(game) {
         var player = game.add.sprite(500, 320, 'bob');
         game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -86,7 +87,7 @@ var Assosso;
             this.obstacles = add.group();
             _.range(0, levelWidth, 300).forEach(function (x) {
                 var sheet = _.sample(obstacleSheets);
-                var obstacle = add.sprite(x + _.random(-50, 50), 0, sheet.name, undefined, _this.obstacles);
+                var obstacle = add.sprite(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, sheet.name, undefined, _this.obstacles);
                 obstacle.y = levelHeight - obstacle.height;
                 if (sheet.frames) {
                     obstacle.animations.add('clap', sheet.frames, 10, true);

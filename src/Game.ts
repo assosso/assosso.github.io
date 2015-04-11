@@ -16,6 +16,7 @@ module Assosso {
   const lampDistance: number = 300;
   const lampFrameOffsets: number[] = [0, 3, 0, -2];
   const obstacleInterval: number = 300;
+  const obstacleVariation: number = 100;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(500, 320, 'bob');
@@ -122,7 +123,7 @@ module Assosso {
       _.range(0, levelWidth, 300).forEach(
         x => {
           var sheet = _.sample(obstacleSheets);
-          var obstacle = add.sprite(x + _.random(-50, 50), 0,
+          var obstacle = add.sprite(x + _.random(-obstacleVariation/2, obstacleVariation/2), 0,
               sheet.name, undefined, this.obstacles);
           obstacle.y = levelHeight - obstacle.height;
           if (sheet.frames) {
