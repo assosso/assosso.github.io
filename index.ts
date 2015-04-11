@@ -2,9 +2,9 @@
 /// <reference path="lib/lodash.d.ts" />
 
 module Assosso {
-  const monsterSpeed: number = 150;
-  const levelWidth: 24000;
-  const frontFactor: 1.1;
+  const monsterSpeed: number = 250;
+  const levelWidth: number = 24000;
+  const frontFactor: number = -0.1;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(500, 320, 'bob');
@@ -50,6 +50,7 @@ module Assosso {
     rightButton: Phaser.Key;
     leftButton: Phaser.Key;
     grotte: Phaser.Group;
+    grotteFond: Phaser.Group;
     front: Phaser.Group;
 
     start() {
@@ -67,8 +68,11 @@ module Assosso {
         .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
         .image('stalactite', 'asset/scenery/decor_stalactite.png');
 
-      ['A','B','C','D'].forEach(
-        (l, i) => load.image('grotte' + i, 'asset/scenery/background_grotte' + l + '.png')
+      _.range(4).forEach(
+        i => load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png')
+      );
+      _.range(5).forEach(
+        i => load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png')
       );
     }
 
@@ -79,13 +83,22 @@ module Assosso {
 
       var add = this.game.add;
 
-      this.grotte = add.group();
-      _.range(0, levelWidth, 800).forEach(
-        x => add.image(x, 0, 'grotte' + _.random(0, 3), undefined, this.grotte)
+      this.grotteFond = add.group();
+      _.range(300, levelWidth, 900).forEach(
+        x => add.image(x, 0, 'grotteFond' + _.random(4), undefined, this.grotteFond)
       );
 
+      this.grotte = add.group();
+      _.range(0, levelWidth, 800).forEach(
+        x => add.image(x, 0, 'grotte' + _.random(3), undefined, this.grotte)
+      );
+
+      this.player = createPlayer(this.game);
+
+      this.monster = createMonster(this.game);
+
       this.front = add.group();
-      add.tileSprite(0, 0, levelWidth * frontFactor, this.game.world.bounds.height, 'stalactite', this.front);
+      add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.game.world.bounds.height, 'stalactite', undefined, this.front);
 
       this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -95,17 +108,14 @@ module Assosso {
       this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
       this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
       this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-
-      this.player = createPlayer(this.game);
-
-      this.monster = createMonster(this.game);
     }
 
     update() {
 
       // this.game.physics.arcade.collide(this.player, this.layer);
       this.game.camera.x = this.monster.x + 20;
-      this.grotte.x = this.game.camera.x * 0.5;
+      this.grotteFond.x = this.game.camera.x * 0.7;
+      this.grotte.x = this.game.camera.x * 0.6;
       this.front.x = this.game.camera.x * frontFactor;
 
       this.player.body.velocity.x = monsterSpeed * 0.9;
@@ -118,11 +128,11 @@ module Assosso {
 
       if (this.jumpButton.isDown && this.player.body.onFloor() && this.game.time.now > this.jumpTimer) {
         this.player.body.velocity.y = -500;
-        this.jumpTimer = this.game.time.now + 750;
+        this.jumpTimer = this.game.time.now + 150;
       }
 
       if (this.rightButton.isDown) {
-        this.player.body.velocity.x = 300;
+        this.player.body.velocity.x = monsterSpeed * 1.2;
       }
 
     }
@@ -137,5 +147,4 @@ module Assosso {
   }
 
   new AssossoGame().start();
-
 }
