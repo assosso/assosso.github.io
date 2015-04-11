@@ -63,6 +63,10 @@ function update() {
     jumpTimer = game.time.now + 750;
   }
 
+  if (rightButton.isDown) {
+    player.body.velocity.x = 300;
+  }
+
 }
 
 function render () {
