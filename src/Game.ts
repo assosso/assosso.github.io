@@ -6,10 +6,10 @@ module Assosso {
   const levelWidth: number = 24000;
   const levelHeight: number = 600;
   const frontFactor: number = -0.1;
-  const obstacleSheets: any[] = [
-    { width: 105, height: 73, frames: [0, 1] },
-    { width: 159, height: 56 },
-    { width: 44,  height: 76 }
+  const obstacleData: any[] = [
+    { key: "obstacle_jump0" },
+    { key: "obstacle_jump1" },
+    { key: "obstacle_jump2" }
   ];
   const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
   const lampAngle: number = 2.5;
@@ -41,7 +41,7 @@ module Assosso {
     monster.y = levelHeight - monster.height + 20;
     game.physics.enable(monster, Phaser.Physics.ARCADE);
 
-    monster.animations.add('right', _.range(6), 10, true);
+    monster.animations.add('right', null, 10, true);
 
     monster.animations.play('right');
 
@@ -71,28 +71,10 @@ module Assosso {
 
     preload() {
       var load = this.load;
-      load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
-        .spritesheet('monster', 'asset/sprite_monster_run.png', 476, 444)
-        .image('stalactite', 'asset/scenery/decor_stalactite.png');
-
-      obstacleSheets.forEach(
-        (sheet, i) => {
-          sheet.name = 'obstacle_jump' + i;
-          load.spritesheet(sheet.name, 'asset/obstacles/obstacle_jump' + i + '.png',
-                           sheet.width, sheet.height);
-        }
-      );
-
-      _.range(4).forEach(
-        i => load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png')
-      );
-      _.range(5).forEach(
-        i => load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png')
-      );
+      load.pack('main', 'asset/assets.json');
 
       this.leSon = new Son(this);
       this.leSon.preload();
-
     }
 
     drawLamp(fill: number, alpha: number): PIXI.Graphics {
@@ -124,14 +106,12 @@ module Assosso {
       this.obstacles = add.group();
       _.range(0, levelWidth, 300).forEach(
         x => {
-          var sheet = _.sample(obstacleSheets);
+          var data = _.sample(obstacleData);
           var obstacle = add.sprite(x + _.random(-obstacleVariation/2, obstacleVariation/2), 0,
-              sheet.name, undefined, this.obstacles);
+                                    data.key, undefined, this.obstacles);
           obstacle.y = levelHeight - obstacle.height;
-          if (sheet.frames) {
-            obstacle.animations.add('clap', sheet.frames, 10, true);
-            obstacle.animations.play('clap');
-          }
+          obstacle.animations.add('clap', null, 10, true);
+          obstacle.animations.play('clap');
         }
       );
 

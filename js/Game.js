@@ -12,10 +12,10 @@ var Assosso;
     var levelWidth = 24000;
     var levelHeight = 600;
     var frontFactor = -0.1;
-    var obstacleSheets = [
-        { width: 105, height: 73, frames: [0, 1] },
-        { width: 159, height: 56 },
-        { width: 44, height: 76 }
+    var obstacleData = [
+        { key: "obstacle_jump0" },
+        { key: "obstacle_jump1" },
+        { key: "obstacle_jump2" }
     ];
     var lampOffset = new Phaser.Point(72, 25);
     var lampAngle = 2.5;
@@ -40,7 +40,7 @@ var Assosso;
         var monster = game.add.sprite(0, 0, 'monster');
         monster.y = levelHeight - monster.height + 20;
         game.physics.enable(monster, Phaser.Physics.ARCADE);
-        monster.animations.add('right', _.range(6), 10, true);
+        monster.animations.add('right', null, 10, true);
         monster.animations.play('right');
         var monsterBody = monster.body;
         monsterBody.velocity.x = monsterSpeed;
@@ -57,15 +57,7 @@ var Assosso;
         }
         Game.prototype.preload = function () {
             var load = this.load;
-            load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
-                .spritesheet('monster', 'asset/sprite_monster_run.png', 476, 444)
-                .image('stalactite', 'asset/scenery/decor_stalactite.png');
-            obstacleSheets.forEach(function (sheet, i) {
-                sheet.name = 'obstacle_jump' + i;
-                load.spritesheet(sheet.name, 'asset/obstacles/obstacle_jump' + i + '.png', sheet.width, sheet.height);
-            });
-            _.range(4).forEach(function (i) { return load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png'); });
-            _.range(5).forEach(function (i) { return load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png'); });
+            load.pack('main', 'asset/assets.json');
             this.leSon = new Assosso.Son(this);
             this.leSon.preload();
         };
@@ -88,13 +80,11 @@ var Assosso;
             _.range(0, levelWidth, 800).forEach(function (x) { return add.image(x, 0, 'grotte' + _.random(3), undefined, _this.grotte); });
             this.obstacles = add.group();
             _.range(0, levelWidth, 300).forEach(function (x) {
-                var sheet = _.sample(obstacleSheets);
-                var obstacle = add.sprite(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, sheet.name, undefined, _this.obstacles);
+                var data = _.sample(obstacleData);
+                var obstacle = add.sprite(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, data.key, undefined, _this.obstacles);
                 obstacle.y = levelHeight - obstacle.height;
-                if (sheet.frames) {
-                    obstacle.animations.add('clap', sheet.frames, 10, true);
-                    obstacle.animations.play('clap');
-                }
+                obstacle.animations.add('clap', null, 10, true);
+                obstacle.animations.play('clap');
             });
             this.player = createPlayer(this.game);
             this.lamp = add.group();
