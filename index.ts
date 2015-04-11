@@ -32,10 +32,11 @@ module Assosso {
     player = game.add.sprite(500, 320, 'bob');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
-    player.body.collideWorldBounds = true;
-    player.body.gravity.y = 1000;
-    player.body.maxVelocity.y = 500;
-    player.body.setSize(92, 130, 0, 0);
+    var body: Phaser.Physics.Arcade.Body = player.body;
+    body.collideWorldBounds = true;
+    body.gravity.y = 1000;
+    body.maxVelocity.y = 500;
+    body.setSize(50, 120, 20, 10);
 
     player.animations.add('right', [0, 1, 2], 10, true);
     player.animations.add('jump', [3], 10, false);
