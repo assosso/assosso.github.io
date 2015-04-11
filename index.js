@@ -1,9 +1,8 @@
 var game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso',
  { preload: preload, create: create, update: update, render: render });
- 
+
 function preload() {
-    
-  game.load.baseURL = 'https://raw.githubusercontent.com/assosso/assosso/master/';
+
   game.load.spritesheet('dude', 'asset/sprite_perso_run.png', 92, 130);
   game.load.image('background', 'background2.png');
 
