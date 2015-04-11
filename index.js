@@ -39,6 +39,7 @@ function create() {
   //player.animations.add('turn', [4], 20, true);
   player.animations.add('right', [0, 1, 2], 10, true);
 //sprite.animations.add('name', [ frames ], frameRate, loop);
+  player.animations.add('jump', [3], 10, false);
   
   cursors = game.input.keyboard.createCursorKeys();
   jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -58,7 +59,8 @@ function update() {
   if (player.body.onFloor()) {
     player.animations.play('right');
   } else {
-    player.animations.stop();
+    player.animations.play('jump');
+//    player.animations.stop();
   }
 
   if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
