@@ -6,6 +6,7 @@
     "module": "amd"
   },
   "files": [
+    "src/Son.ts",
     "src/Game.ts",
     "src/Boot.ts",
     "src/init.ts"

@@ -48,6 +48,8 @@ var Assosso;
                 .image('stalactite', 'asset/scenery/decor_stalactite.png');
             _.range(4).forEach(function (i) { return load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png'); });
             _.range(5).forEach(function (i) { return load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png'); });
+            this.leSon = new Assosso.Son(this);
+            this.leSon.preload();
         };
         Game.prototype.create = function () {
             var _this = this;
@@ -68,6 +70,7 @@ var Assosso;
             this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
             this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
             this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+            this.leSon.create();
         };
         Game.prototype.update = function () {
             this.camera.x = this.monster.x + 20;
@@ -84,6 +87,7 @@ var Assosso;
             if (this.jumpButton.isDown && this.player.body.onFloor() && this.time.now > this.jumpTimer) {
                 this.player.body.velocity.y = -500;
                 this.jumpTimer = this.time.now + 150;
+                this.leSon.footStep();
             }
             if (this.rightButton.isDown) {
                 this.player.body.velocity.x = monsterSpeed * 1.2;

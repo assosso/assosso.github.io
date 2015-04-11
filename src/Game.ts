@@ -51,6 +51,7 @@ module Assosso {
     grotte: Phaser.Group;
     grotteFond: Phaser.Group;
     front: Phaser.Group;
+    leSon: Assosso.Son;
 
     preload() {
       var load = this.load;
@@ -64,6 +65,10 @@ module Assosso {
       _.range(5).forEach(
         i => load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png')
       );
+
+      this.leSon = new Son(this);
+      this.leSon.preload();
+
     }
 
     create() {
@@ -98,6 +103,9 @@ module Assosso {
       this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
       this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
       this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+      this.leSon.create();
+
     }
 
     update() {
@@ -119,6 +127,7 @@ module Assosso {
       if (this.jumpButton.isDown && this.player.body.onFloor() && this.time.now > this.jumpTimer) {
         this.player.body.velocity.y = -500;
         this.jumpTimer = this.time.now + 150;
+        this.leSon.footStep();
       }
 
       if (this.rightButton.isDown) {
