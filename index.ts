@@ -54,7 +54,7 @@ module Assosso {
     front: Phaser.Group;
 
     start() {
-      this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso', {
+      this.game = new Phaser.Game(1000, 600, Phaser.WEBGL, 'Assosso', {
         preload: this.preload.bind(this),
         create: this.create.bind(this),
         update: this.update.bind(this),
