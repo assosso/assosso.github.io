@@ -3,7 +3,7 @@
 module Assosso {
   const monsterSpeed: number = 150;
 
-  function createPlayer(game): Phaser.Sprite {
+  function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(500, 320, 'bob');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -21,7 +21,7 @@ module Assosso {
     return player;
   }
 
-  function createMonster(game): Phaser.Sprite {
+  function createMonster(game: Phaser.Game): Phaser.Sprite {
     var monster = game.add.sprite(100, 400, 'monster');
     game.physics.enable(monster, Phaser.Physics.ARCADE);
 
@@ -64,7 +64,7 @@ module Assosso {
     create() {
       this.game.world.setBounds(0, 0, 24000, 600);
 
-      this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, 'background');
+      this.game.stage.backgroundColor = 'rgb(32,38,51)';
 
       this.game.physics.startSystem(Phaser.Physics.ARCADE);
 

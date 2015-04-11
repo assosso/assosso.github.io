@@ -40,7 +40,7 @@ var Assosso;
         };
         AssossoGame.prototype.create = function () {
             this.game.world.setBounds(0, 0, 24000, 600);
-            this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, 'background');
+            this.game.stage.backgroundColor = 'rgb(32,38,51)';
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.game.physics.arcade.gravity.y = 300;
             this.cursors = this.game.input.keyboard.createCursorKeys();
