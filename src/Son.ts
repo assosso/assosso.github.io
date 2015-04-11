@@ -7,7 +7,6 @@ module Assosso {
 
     currentFS: number = 0;
     footSteps: Phaser.Sound[]=[];
-    obstacles: Phaser.Sound[]=[];
     Nbplay: number[]=[];
 
     constructor(public agame : Assosso.Game ){
@@ -19,14 +18,6 @@ module Assosso {
       [1,2,3,4].forEach(
         i => this.agame.load.audio('FS' + i, 'asset/son/FS/Assosso_Footstep_Running_0' + i + '.wav')
       );
-
-      // Obstacles
-      this.agame.load.audio('OBS'+'1' , '/asset/son/obstacle/piege-a-loup.wav');
-      this.agame.load.audio('OBS'+'2' , '/asset/son/obstacle/rocher.wav');
-      this.agame.load.audio('OBS'+'3' , '/asset/son/obstacle/pic.wav');
-
-      this.agame.load.audio('ACT'+'1' , '/asset/son/obstacle/saute.wav');
-
     }
 
     create(){
@@ -36,10 +27,12 @@ module Assosso {
       );
 
       // Obstacles
-      [0,1,2].forEach(
-        i => this.obstacles[i] = this.agame.add.audio('OBS' + i)
+      Assosso.obstacleTypes.forEach(
+        type => {
+          type.audio = this.agame.add.audio(type.assetKey);
+          type.actionAudio = this.agame.add.audio(type.action);
+        }
       );
-
     }
 
     footStep(){
@@ -50,17 +43,21 @@ module Assosso {
 //      this.footSteps[Math.ceil(Math.random() * 4)].play();
     }
 
-    obstacle( obsNb:number ){
-      if (this.Nbplay[obsNb] == null){ this.Nbplay[obsNb]=0; }
-      this.Nbplay[obsNb] = this.Nbplay[obsNb] + 1;
-      switch( this.Nbplay[obsNb] ){
+    obstacle( obs: any ){
+      var type = obs.obstacleType;
+      if (typeof type.Nbplay === 'undefined') {
+        type.Nbplay = 0;
+      }
+
+      type.Nbplay++;
+      switch( type.Nbplay ){
         case 1:
           // nom obstacle + action
-          //this.obstacles[obsNb].onStop.addOnce( ()=> );
-          this.obstacles[obsNb].play();
+          this.playInSequence(type.audio, type.actionAudio);
         break;
         case 2:
           // nom obstacle
+          type.audio.play();
         break;
         default :
           // nom obstacle etrange
@@ -69,6 +66,10 @@ module Assosso {
       }
     }// obstacle
 
+    playInSequence(sound1: Phaser.Sound, sound2: Phaser.Sound) {
+      sound1.onStop.addOnce(()=>sound2.play());
+      sound1.play();
+    }
 
   } // Son
 }

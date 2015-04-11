@@ -12,17 +12,19 @@ var Assosso;
     var levelWidth = 24000;
     var levelHeight = 600;
     var frontFactor = -0.1;
-    var obstacleData = [
-        { key: "obstacle_jump0" },
-        { key: "obstacle_jump1" },
-        { key: "obstacle_jump2" }
+    Assosso.obstacleTypes = [
+        { assetKey: "piege-a-loup", action: "saute" },
+        { assetKey: "rocher", action: "saute" },
+        { assetKey: "pic", action: "saute" },
+        { assetKey: "chauve-souris", action: "glissade" }
     ];
     var lampOffset = new Phaser.Point(72, 25);
     var lampAngle = 2.5;
     var lampDistance = 200;
-    var lampFrameOffsets = [0, 3, 0, -2, 1000];
+    var lampFrameOffsets = [0, 3, 0, -2, 1000, 1000];
     var obstacleInterval = 900;
     var obstacleVariation = 100;
+    var detectorDistance = 400;
     function createPlayer(game) {
         var player = game.add.sprite(600, 0, 'bob');
         player.y = levelHeight - player.height;
@@ -34,7 +36,7 @@ var Assosso;
         playerBody.setSize(50, 120, 20, 10);
         player.animations.add('right', [0, 1, 2], 10, true);
         player.animations.add('jump', [3], 10, false);
-        player.animations.add('reception', [4], 5, false);
+        player.animations.add('reception', [4, 5], 3, true);
         player.animations.play('right');
         return player;
     }
@@ -52,14 +54,16 @@ var Assosso;
     }
     function createObstacles(game) {
         var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
-        _.range(0, levelWidth, obstacleInterval).forEach(function (x) {
-            var data = _.sample(obstacleData);
-            var obstacle = obstacles.create(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, data.key);
+        _.range(2000, levelWidth, obstacleInterval).forEach(function (x) {
+            var type = _.sample(Assosso.obstacleTypes);
+            var obstacle = obstacles.create(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, type.assetKey);
             obstacle.body.immovable = true;
             obstacle.body.allowGravity = false;
             obstacle.y = levelHeight - obstacle.height;
             obstacle.animations.add('clap', null, 10, true);
             obstacle.animations.play('clap');
+            obstacle.body.setSize(obstacle.width * 0.8, obstacle.height * 0.8, 0, obstacle.height * 0.2);
+            obstacle.obstacleType = type;
         });
         return obstacles;
     }
@@ -106,6 +110,11 @@ var Assosso;
             this.monster = createMonster(this.game);
             this.front = add.group();
             add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.world.bounds.height, 'stalactite', undefined, this.front);
+            this.obstacleDetector = this.add.sprite(0, 0, null);
+            this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
+            this.obstacleDetector.body.setSize(100, 500, detectorDistance, -50);
+            this.obstacleDetector.body.moves = false;
+            this.player.addChild(this.obstacleDetector);
             this.physics.startSystem(Phaser.Physics.ARCADE);
             this.physics.arcade.gravity.y = 300;
             this.cursors = this.input.keyboard.createCursorKeys();
@@ -120,6 +129,15 @@ var Assosso;
                 obstacle.destroy();
                 _this.slowDownUntil = _this.time.now + 100;
             });
+            if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, function (detector, obstacle) {
+                if (!obstacle.detected) {
+                    _this.detectedObstacle = obstacle;
+                    obstacle.detected = true;
+                    _this.leSon.obstacle(obstacle);
+                }
+            })) {
+                this.detectedObstacle = null;
+            }
             this.camera.x = this.monster.x + 120;
             this.grotteFond.x = this.camera.x * 0.1;
             this.grotte.x = this.camera.x * 0.0;
@@ -153,9 +171,8 @@ var Assosso;
             this.lamp.y = lampFrameOffsets[this.player.frame];
         };
         Game.prototype.render = function () {
-            // this.game.debug.text(this.game.time.fpsMax.toString(), 32, 32);
-            //  this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
-            // this.game.debug.body(this.monster);
+            //this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
+            //this.game.debug.body(this.obstacleDetector);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
         return Game;

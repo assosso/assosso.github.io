@@ -11,7 +11,7 @@ module Assosso {
         this.input.maxPointers = 1;
 
         //  Phaser will automatically pause if the browser tab the game is in loses focus. You can disable that here:
-        this.stage.disableVisibilityChange = true;
+        //this.stage.disableVisibilityChange = true;
 
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         this.scale.setMinMax(532, 300, 1065, 600);

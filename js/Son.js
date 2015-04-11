@@ -7,6 +7,7 @@ var Assosso;
             this.agame = agame;
             this.currentFS = 0;
             this.footSteps = [];
+            this.Nbplay = [];
         }
         Son.prototype.preload = function () {
             var _this = this;
@@ -15,6 +16,10 @@ var Assosso;
         Son.prototype.create = function () {
             var _this = this;
             [1, 2, 3, 4].forEach(function (i) { return _this.footSteps[i] = _this.agame.add.audio('FS' + i); });
+            Assosso.obstacleTypes.forEach(function (type) {
+                type.audio = _this.agame.add.audio(type.assetKey);
+                type.actionAudio = _this.agame.add.audio(type.action);
+            });
         };
         Son.prototype.footStep = function () {
             this.currentFS = this.currentFS + 1;
@@ -23,12 +28,26 @@ var Assosso;
             }
             this.footSteps[this.currentFS].play();
         };
-        Son.prototype.obstacle = function (obsName) {
-            switch (obsName) {
-                case "bat":
+        Son.prototype.obstacle = function (obs) {
+            var type = obs.obstacleType;
+            if (typeof type.Nbplay === 'undefined') {
+                type.Nbplay = 0;
+            }
+            type.Nbplay++;
+            switch (type.Nbplay) {
+                case 1:
+                    this.playInSequence(type.audio, type.actionAudio);
+                    break;
+                case 2:
+                    type.audio.play();
                     break;
                 default:
+                    break;
             }
+        };
+        Son.prototype.playInSequence = function (sound1, sound2) {
+            sound1.onStop.addOnce(function () { return sound2.play(); });
+            sound1.play();
         };
         return Son;
     })();

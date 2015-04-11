@@ -6,17 +6,19 @@ module Assosso {
   const levelWidth: number = 24000;
   const levelHeight: number = 600;
   const frontFactor: number = -0.1;
-  const obstacleData: any[] = [
-    { key: "obstacle_jump0" },
-    { key: "obstacle_jump1" },
-    { key: "obstacle_jump2" }
+  export var obstacleTypes: any[] = [
+    { assetKey: "piege-a-loup", action: "saute" },
+    { assetKey: "rocher", action: "saute" },
+    { assetKey: "pic", action: "saute" },
+    { assetKey: "chauve-souris", action: "glissade" }
   ];
   const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
   const lampAngle: number = 2.5;
   const lampDistance: number = 200;
-  const lampFrameOffsets: number[] = [0, 3, 0, -2, 1000];
+  const lampFrameOffsets: number[] = [0, 3, 0, -2, 1000, 1000];
   const obstacleInterval: number = 900;
   const obstacleVariation: number = 100;
+  const detectorDistance: number = 400;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(600, 0, 'bob');
@@ -31,7 +33,7 @@ module Assosso {
 
     player.animations.add('right', [0, 1, 2], 10, true);
     player.animations.add('jump', [3], 10, false);
-    player.animations.add('reception', [4], 5, false);
+    player.animations.add('reception', [4, 5], 3, true);
 
     player.animations.play('right');
 
@@ -57,16 +59,19 @@ module Assosso {
 
   function createObstacles(game: Phaser.Game) {
       var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
-      _.range(0, levelWidth, obstacleInterval).forEach(
+      _.range(2000, levelWidth, obstacleInterval).forEach(
         x => {
-          var data = _.sample(obstacleData);
+          var type = _.sample(obstacleTypes);
+
           var obstacle = obstacles.create(x + _.random(-obstacleVariation/2, obstacleVariation/2), 0,
-                                          data.key);
+                                          type.assetKey);
           obstacle.body.immovable = true;
           obstacle.body.allowGravity = false;
           obstacle.y = levelHeight - obstacle.height;
           obstacle.animations.add('clap', null, 10, true);
           obstacle.animations.play('clap');
+          obstacle.body.setSize(obstacle.width * 0.8, obstacle.height * 0.8, 0, obstacle.height * 0.2);
+          obstacle.obstacleType = type;
         }
       );
       return obstacles;
@@ -88,6 +93,8 @@ module Assosso {
     front: Phaser.Group;
     leSon: Assosso.Son;
     lamp: Phaser.Group;
+    obstacleDetector: Phaser.Sprite;
+    detectedObstacle: Phaser.Sprite;
 
     preload() {
       var load = this.load;
@@ -146,6 +153,12 @@ module Assosso {
       this.front = add.group();
       add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.world.bounds.height, 'stalactite', undefined, this.front);
 
+      this.obstacleDetector = this.add.sprite(0, 0, null);
+      this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
+      this.obstacleDetector.body.setSize(100,500,detectorDistance,-50);
+      this.obstacleDetector.body.moves = false;
+      this.player.addChild(this.obstacleDetector);
+
       this.physics.startSystem(Phaser.Physics.ARCADE);
 
       this.physics.arcade.gravity.y = 300;
@@ -156,7 +169,6 @@ module Assosso {
       this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
       this.leSon.create();
-
     }
 
     update() {
@@ -165,6 +177,16 @@ module Assosso {
         obstacle.destroy();
         this.slowDownUntil = this.time.now + 100;
       });
+
+      if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, (detector, obstacle) => {
+        if (!obstacle.detected) {
+          this.detectedObstacle = obstacle;
+          obstacle.detected = true;
+          this.leSon.obstacle(obstacle);
+        }
+      })) {
+        this.detectedObstacle = null;
+      }
 
       this.camera.x = this.monster.x + 120;
       this.grotteFond.x = this.camera.x * 0.1;
@@ -206,9 +228,8 @@ module Assosso {
 
     render () {
 
-    // this.game.debug.text(this.game.time.fpsMax.toString(), 32, 32);
-    //  this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
-      // this.game.debug.body(this.monster);
+      //this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
+      //this.game.debug.body(this.obstacleDetector);
       // this.game.debug.bodyInfo(this.player, 16, 24);
 
     }

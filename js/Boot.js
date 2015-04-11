@@ -16,7 +16,6 @@ var Assosso;
         }
         Boot.prototype.init = function () {
             this.input.maxPointers = 1;
-            this.stage.disableVisibilityChange = true;
             this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             this.scale.setMinMax(532, 300, 1065, 600);
             if (this.game.device.desktop) {
