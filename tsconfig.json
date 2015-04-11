@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "removeComments": true,
-    "out": "index.js",
+    "outDir": "js",
     "sourceMap": true,
     "module": "amd"
   },
   "files": [
-    "Game.ts",
-    "Boot.ts",
-    "index.ts"
+    "src/Game.ts",
+    "src/Boot.ts",
+    "src/init.ts"
   ]
 }

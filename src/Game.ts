@@ -1,5 +1,5 @@
-/// <reference path="lib/phaser.comments.d.ts" />
-/// <reference path="lib/lodash.d.ts" />
+/// <reference path="../lib/phaser.comments.d.ts" />
+/// <reference path="../lib/lodash.d.ts" />
 
 module Assosso {
   const monsterSpeed: number = 250;

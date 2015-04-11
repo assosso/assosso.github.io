@@ -1,5 +1,5 @@
-/// <reference path="lib/phaser.comments.d.ts" />
-/// <reference path="lib/lodash.d.ts" />
+/// <reference path="../lib/phaser.comments.d.ts" />
+/// <reference path="../lib/lodash.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -98,45 +98,4 @@ var Assosso;
     })(Phaser.State);
     Assosso.Game = Game;
 })(Assosso || (Assosso = {}));
-/// <reference path="lib/phaser.comments.d.ts" />
-/// <reference path="lib/lodash.d.ts" />
-var Assosso;
-(function (Assosso) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.apply(this, arguments);
-        }
-        Boot.prototype.init = function () {
-            this.input.maxPointers = 1;
-            this.stage.disableVisibilityChange = true;
-            if (this.game.device.desktop) {
-                this.scale.pageAlignHorizontally = true;
-            }
-            else {
-                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-                this.scale.setMinMax(480, 260, 1024, 768);
-                this.scale.forceLandscape = true;
-                this.scale.pageAlignHorizontally = true;
-            }
-        };
-        Boot.prototype.preload = function () {
-        };
-        Boot.prototype.create = function () {
-            this.game.state.start('Game');
-        };
-        return Boot;
-    })(Phaser.State);
-    Assosso.Boot = Boot;
-})(Assosso || (Assosso = {}));
-/// <reference path="lib/phaser.comments.d.ts" />
-var Assosso;
-(function (Assosso) {
-    window.onload = function () {
-        var game = new Phaser.Game(1065, 600, Phaser.WEBGL, 'gameContainer');
-        game.state.add('Game', Assosso.Game);
-        game.state.add('Boot', Assosso.Boot);
-        game.state.start('Boot');
-    };
-})(Assosso || (Assosso = {}));
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=Game.js.map
