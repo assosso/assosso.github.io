@@ -1,7 +1,10 @@
 /// <reference path="lib/phaser.comments.d.ts" />
+/// <reference path="lib/lodash.d.ts" />
 
 module Assosso {
   const monsterSpeed: number = 150;
+  const levelWidth: 24000;
+  const frontFactor: 1.1;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(500, 320, 'bob');
@@ -46,6 +49,8 @@ module Assosso {
     jumpButton: Phaser.Key;
     rightButton: Phaser.Key;
     leftButton: Phaser.Key;
+    grotte: Phaser.Group;
+    front: Phaser.Group;
 
     start() {
       this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso', {
@@ -57,17 +62,30 @@ module Assosso {
      }
 
     preload() {
-      this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
-        .spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222)
+      var load = this.game.load;
+      load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
+        .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
         .image('stalactite', 'asset/scenery/decor_stalactite.png');
+
+      ['A','B','C','D'].forEach(
+        (l, i) => load.image('grotte' + i, 'asset/scenery/background_grotte' + l + '.png')
+      );
     }
 
     create() {
-      this.game.world.setBounds(0, 0, 24000, 600);
+      this.game.world.setBounds(0, 0, levelWidth, 600);
 
       this.game.stage.backgroundColor = 'rgb(32,38,51)';
 
-      this.game.add.tileSprite(0, 0, this.game.world.bounds.width, this.game.world.bounds.height, 'stalactite');
+      var add = this.game.add;
+
+      this.grotte = add.group();
+      _.range(0, levelWidth, 800).forEach(
+        x => add.image(x, 0, 'grotte' + _.random(0, 3), undefined, this.grotte)
+      );
+
+      this.front = add.group();
+      add.tileSprite(0, 0, levelWidth * frontFactor, this.game.world.bounds.height, 'stalactite', this.front);
 
       this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -81,13 +99,14 @@ module Assosso {
       this.player = createPlayer(this.game);
 
       this.monster = createMonster(this.game);
-
     }
 
     update() {
 
       // this.game.physics.arcade.collide(this.player, this.layer);
       this.game.camera.x = this.monster.x + 20;
+      this.grotte.x = this.game.camera.x * 0.5;
+      this.front.x = this.game.camera.x * frontFactor;
 
       this.player.body.velocity.x = monsterSpeed * 0.9;
 

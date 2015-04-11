@@ -1,7 +1,10 @@
 /// <reference path="lib/phaser.comments.d.ts" />
+/// <reference path="lib/lodash.d.ts" />
 var Assosso;
 (function (Assosso) {
     var monsterSpeed = 150;
+    var levelWidth = 24000;
+    var frontFactor = 1.1;
     function createPlayer(game) {
         var player = game.add.sprite(500, 320, 'bob');
         game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -39,14 +42,21 @@ var Assosso;
             });
         };
         AssossoGame.prototype.preload = function () {
-            this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
-                .spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222)
+            var load = this.game.load;
+            load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
+                .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
                 .image('stalactite', 'asset/scenery/decor_stalactite.png');
+            ['A', 'B', 'C', 'D'].forEach(function (l, i) { return load.image('grotte' + i, 'asset/scenery/background_grotte' + l + '.png'); });
         };
         AssossoGame.prototype.create = function () {
-            this.game.world.setBounds(0, 0, 24000, 600);
+            var _this = this;
+            this.game.world.setBounds(0, 0, levelWidth, 600);
             this.game.stage.backgroundColor = 'rgb(32,38,51)';
-            this.game.add.tileSprite(0, 0, this.game.world.bounds.width, this.game.world.bounds.height, 'stalactite');
+            var add = this.game.add;
+            this.grotte = add.group();
+            _.range(0, levelWidth, 800).forEach(function (x) { return add.image(x, 0, 'grotte' + _.random(0, 3), undefined, _this.grotte); });
+            this.front = add.group();
+            add.tileSprite(0, 0, levelWidth * frontFactor, this.game.world.bounds.height, 'stalactite', this.front);
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.game.physics.arcade.gravity.y = 300;
             this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -58,6 +68,8 @@ var Assosso;
         };
         AssossoGame.prototype.update = function () {
             this.game.camera.x = this.monster.x + 20;
+            this.grotte.x = this.game.camera.x * 0.5;
+            this.front.x = this.game.camera.x * frontFactor;
             this.player.body.velocity.x = monsterSpeed * 0.9;
             if (this.player.body.onFloor()) {
                 this.player.animations.play('right');
