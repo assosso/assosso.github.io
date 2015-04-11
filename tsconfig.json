@@ -2,7 +2,8 @@
   "compilerOptions": {
     "removeComments": true,
     "out": "index.js",
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "amd"
   },
   "files": [
     "index.ts"
