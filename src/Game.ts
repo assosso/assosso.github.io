@@ -4,7 +4,18 @@
 module Assosso {
   const monsterSpeed: number = 250;
   const levelWidth: number = 24000;
+  const levelHeight: number = 600;
   const frontFactor: number = -0.1;
+  const obstacleSheets: any[] = [
+    { width: 105, height: 73, frames: [0, 1] },
+    { width: 159, height: 56 },
+    { width: 44,  height: 76 }
+  ];
+  const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
+  const lampAngle: number = 1.1;
+  const lampDistance: number = 300;
+  const lampFrameOffsets: number[] = [0, 3, 0, -2];
+  const obstacleInterval: number = 300;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(500, 320, 'bob');
@@ -50,14 +61,24 @@ module Assosso {
     leftButton: Phaser.Key;
     grotte: Phaser.Group;
     grotteFond: Phaser.Group;
+    obstacles: Phaser.Group;
     front: Phaser.Group;
     leSon: Assosso.Son;
+    lamp: Phaser.Group;
 
     preload() {
       var load = this.load;
       load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
         .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
         .image('stalactite', 'asset/scenery/decor_stalactite.png');
+
+      obstacleSheets.forEach(
+        (sheet, i) => {
+          sheet.name = 'obstacle_jump' + i;
+          load.spritesheet(sheet.name, 'asset/obstacles/obstacle_jump' + i + '.png',
+                           sheet.width, sheet.height);
+        }
+      );
 
       _.range(4).forEach(
         i => load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png')
@@ -71,8 +92,17 @@ module Assosso {
 
     }
 
+    drawLamp(fill: number, alpha: number): PIXI.Graphics {
+      var gfx = this.add.graphics(lampOffset.x, lampOffset.y);
+      gfx.beginFill(fill, alpha);
+      gfx.arc(0, 0, lampDistance, -lampAngle/2, lampAngle/2, false);
+      gfx.lineTo(0, 0);
+      gfx.lineTo(0, -10);
+      return gfx;
+    }
+
     create() {
-      this.world.setBounds(0, 0, levelWidth, 600);
+      this.world.setBounds(0, 0, levelWidth, levelHeight);
 
       this.stage.backgroundColor = 'rgb(32,38,51)';
 
@@ -88,7 +118,35 @@ module Assosso {
         x => add.image(x, 0, 'grotte' + _.random(3), undefined, this.grotte)
       );
 
+      this.obstacles = add.group();
+      _.range(0, levelWidth, 300).forEach(
+        x => {
+          var sheet = _.sample(obstacleSheets);
+          var obstacle = add.sprite(x + _.random(-50, 50), 0,
+              sheet.name, undefined, this.obstacles);
+          obstacle.y = levelHeight - obstacle.height;
+          if (sheet.frames) {
+            obstacle.animations.add('clap', sheet.frames, 10, true);
+            obstacle.animations.play('clap');
+          }
+        }
+      );
+
       this.player = createPlayer(this.game);
+
+      this.lamp = add.group();
+
+      var lampMask = this.drawLamp(0xffffff, 1);
+
+      this.lamp.addChild(lampMask);
+
+      this.obstacles.mask = lampMask;
+
+      var beam = this.drawLamp(0xffff00, 0.2);
+
+      this.lamp.addChild(beam);
+
+      this.player.addChild(this.lamp);
 
       this.monster = createMonster(this.game);
 
@@ -133,6 +191,8 @@ module Assosso {
       if (this.rightButton.isDown) {
         this.player.body.velocity.x = monsterSpeed * 1.2;
       }
+
+      this.lamp.y = lampFrameOffsets[this.player.frame];
     }
 
     render () {
