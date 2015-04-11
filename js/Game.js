@@ -37,7 +37,8 @@ var Assosso;
         return player;
     }
     function createMonster(game) {
-        var monster = game.add.sprite(100, 400, 'monster');
+        var monster = game.add.sprite(0, 0, 'monster');
+        monster.y = levelHeight - monster.height + 20;
         game.physics.enable(monster, Phaser.Physics.ARCADE);
         monster.animations.add('right', [0, 1, 2], 10, true);
         monster.animations.play('right');
@@ -56,7 +57,7 @@ var Assosso;
         Game.prototype.preload = function () {
             var load = this.load;
             load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
-                .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
+                .spritesheet('monster', 'asset/sprite_monster_run.png', 476, 444)
                 .image('stalactite', 'asset/scenery/decor_stalactite.png');
             obstacleSheets.forEach(function (sheet, i) {
                 sheet.name = 'obstacle_jump' + i;
