@@ -1,84 +1,118 @@
 /// <reference path="lib/phaser.comments.d.ts" />
 
 module Assosso {
-  var game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso',
-   { preload: preload, create: create, update: update, render: render });
+  const monsterSpeed: number = 150;
 
-  function preload() {
-
-    game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130);
-
-    game.load.image('background', 'background2.png');
-
-  }
-
-  var player: Phaser.Sprite;
-  var facing: string = 'right';
-  var jumpTimer: number = 0;
-  var cursors: Phaser.CursorKeys;
-  var jumpButton: Phaser.Key;
-  var rightButton: Phaser.Key;
-  var leftButton: Phaser.Key;
-
-  function create() {
-    game.world.setBounds(0, 0, 24000, 600);
-
-    game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
-
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    game.physics.arcade.gravity.y = 300;
-
-    player = game.add.sprite(500, 320, 'bob');
+  function createPlayer(game): Phaser.Sprite {
+    var player = game.add.sprite(500, 320, 'bob');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
-    var body: Phaser.Physics.Arcade.Body = player.body;
-    body.collideWorldBounds = true;
-    body.gravity.y = 1000;
-    body.maxVelocity.y = 500;
-    body.setSize(50, 120, 20, 10);
+    var playerBody: Phaser.Physics.Arcade.Body = player.body;
+    playerBody.collideWorldBounds = true;
+    playerBody.gravity.y = 1000;
+    playerBody.maxVelocity.y = 500;
+    playerBody.setSize(50, 120, 20, 10);
 
     player.animations.add('right', [0, 1, 2], 10, true);
     player.animations.add('jump', [3], 10, false);
 
-    cursors = game.input.keyboard.createCursorKeys();
-    jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    leftButton = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-    rightButton = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-
     player.animations.play('right');
+
+    return player;
   }
 
-  function update() {
+  function createMonster(game): Phaser.Sprite {
+    var monster = game.add.sprite(100, 400, 'monster');
+    game.physics.enable(monster, Phaser.Physics.ARCADE);
 
-    // game.physics.arcade.collide(player, layer);
-    game.camera.x = player.x - 300;
+    monster.animations.add('right', [0, 1, 2], 10, true);
 
-    player.body.velocity.x = 150;
+    monster.animations.play('right');
 
-    if (player.body.onFloor()) {
-      player.animations.play('right');
-    } else {
-      player.animations.play('jump');
-    }
+    var monsterBody: Phaser.Physics.Arcade.Body = monster.body;
+    monsterBody.velocity.x = monsterSpeed;
+    monsterBody.allowGravity = false;
 
-    if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
-      player.body.velocity.y = -500;
-      jumpTimer = game.time.now + 750;
-    }
-
-    if (rightButton.isDown) {
-      player.body.velocity.x = 300;
-    }
-
+    return monster;
   }
 
-  function render () {
+  class AssossoGame {
+    game: Phaser.Game;
+    player: Phaser.Sprite;
+    monster: Phaser.Sprite;
+    facing: string = 'right';
+    jumpTimer: number = 0;
+    cursors: Phaser.CursorKeys;
+    jumpButton: Phaser.Key;
+    rightButton: Phaser.Key;
+    leftButton: Phaser.Key;
 
-    // game.debug.text(game.time.physicsElapsed, 32, 32);
-    // game.debug.body(player);
-    // game.debug.bodyInfo(player, 16, 24);
+    start() {
+      this.game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso',
+       { preload: this.preload, create: this.create, update: this.update, render: this.render });
+     }
 
+    preload() {
+
+      this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130);
+      this.game.load.spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222);
+
+      this.game.load.image('background', 'background2.png');
+
+    }
+
+    create() {
+      this.game.world.setBounds(0, 0, 24000, 600);
+
+      this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, 'background');
+
+      this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
+      this.game.physics.arcade.gravity.y = 300;
+
+      this.cursors = this.game.input.keyboard.createCursorKeys();
+      this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+      this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+      this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+
+      this.player = createPlayer(this.game);
+
+      this.monster = createMonster(this.game);
+    }
+
+    update() {
+
+      // this.game.physics.arcade.collide(this.player, this.layer);
+      this.game.camera.x = this.player.x - 300;
+
+      this.player.body.velocity.x = monsterSpeed;
+
+      if (this.player.body.onFloor()) {
+        this.player.animations.play('right');
+      } else {
+        this.player.animations.play('jump');
+      }
+
+      if (this.jumpButton.isDown && this.player.body.onFloor() && this.game.time.now > this.jumpTimer) {
+        this.player.body.velocity.y = -500;
+        this.jumpTimer = this.game.time.now + 750;
+      }
+
+      if (this.rightButton.isDown) {
+        this.player.body.velocity.x = 300;
+      }
+
+    }
+
+    render () {
+
+      // this.game.debug.text(this.game.time.physicsElapsed, 32, 32);
+      // this.game.debug.body(this.player);
+      // this.game.debug.bodyInfo(this.player, 16, 24);
+
+    }
   }
+
+  new AssossoGame().start();
 
 }
