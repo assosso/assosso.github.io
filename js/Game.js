@@ -8,7 +8,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var Assosso;
 (function (Assosso) {
-    var monsterSpeed = 250;
+    var monsterSpeed = 350;
     var levelWidth = 24000;
     var levelHeight = 600;
     var frontFactor = -0.1;
@@ -21,10 +21,11 @@ var Assosso;
     var lampAngle = 2.5;
     var lampDistance = 200;
     var lampFrameOffsets = [0, 3, 0, -2];
-    var obstacleInterval = 300;
+    var obstacleInterval = 900;
     var obstacleVariation = 100;
     function createPlayer(game) {
-        var player = game.add.sprite(500, 320, 'bob');
+        var player = game.add.sprite(600, 0, 'bob');
+        player.y = levelHeight - player.height;
         game.physics.enable(player, Phaser.Physics.ARCADE);
         var playerBody = player.body;
         playerBody.collideWorldBounds = true;
@@ -48,12 +49,26 @@ var Assosso;
         monsterBody.setSize(390, 350, 0, 60);
         return monster;
     }
+    function createObstacles(game) {
+        var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
+        _.range(0, levelWidth, obstacleInterval).forEach(function (x) {
+            var data = _.sample(obstacleData);
+            var obstacle = obstacles.create(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, data.key);
+            obstacle.body.immovable = true;
+            obstacle.body.allowGravity = false;
+            obstacle.y = levelHeight - obstacle.height;
+            obstacle.animations.add('clap', null, 10, true);
+            obstacle.animations.play('clap');
+        });
+        return obstacles;
+    }
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
             _super.apply(this, arguments);
             this.facing = 'right';
-            this.jumpTimer = 0;
+            this.slowDownUntil = 0;
+            this.jumping = false;
         }
         Game.prototype.preload = function () {
             var load = this.load;
@@ -78,14 +93,7 @@ var Assosso;
             _.range(300, levelWidth, 900).forEach(function (x) { return add.image(x, 0, 'grotteFond' + _.random(4), undefined, _this.grotteFond); });
             this.grotte = add.group();
             _.range(0, levelWidth, 800).forEach(function (x) { return add.image(x, 0, 'grotte' + _.random(3), undefined, _this.grotte); });
-            this.obstacles = add.group();
-            _.range(0, levelWidth, 300).forEach(function (x) {
-                var data = _.sample(obstacleData);
-                var obstacle = add.sprite(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, data.key, undefined, _this.obstacles);
-                obstacle.y = levelHeight - obstacle.height;
-                obstacle.animations.add('clap', null, 10, true);
-                obstacle.animations.play('clap');
-            });
+            this.obstacles = createObstacles(this.game);
             this.player = createPlayer(this.game);
             this.lamp = add.group();
             var lampMask = this.drawLamp(0xffffff, 1);
@@ -106,29 +114,47 @@ var Assosso;
             this.leSon.create();
         };
         Game.prototype.update = function () {
-            this.camera.x = this.monster.x + 20;
-            this.grotteFond.x = this.camera.x * 0.7;
-            this.grotte.x = this.camera.x * 0.6;
+            var _this = this;
+            this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) {
+                obstacle.destroy();
+                _this.slowDownUntil = _this.time.now + 100;
+            });
+            this.camera.x = this.monster.x + 120;
+            this.grotteFond.x = this.camera.x * 0.1;
+            this.grotte.x = this.camera.x * 0.0;
             this.front.x = this.camera.x * frontFactor;
-            this.player.body.velocity.x = monsterSpeed * 0.9;
             if (this.player.body.onFloor()) {
-                this.player.animations.play('right');
+                if (this.jumping) {
+                    this.player.body.velocity.x = monsterSpeed * 0.5;
+                    this.slowDownUntil = this.time.now + 500;
+                    this.jumping = false;
+                }
+                var velocityX = 0;
+                if (this.time.now <= this.slowDownUntil) {
+                    velocityX = monsterSpeed * 0.0;
+                    this.player.animations.stop();
+                    this.player.frame = 1;
+                }
+                else {
+                    velocityX = monsterSpeed * (this.rightButton.isDown ? 1.2 : 1);
+                    this.player.animations.play('right');
+                }
+                this.player.body.velocity.x = velocityX;
             }
             else {
                 this.player.animations.play('jump');
             }
-            if (this.jumpButton.isDown && this.player.body.onFloor() && this.time.now > this.jumpTimer) {
+            if (this.jumpButton.isDown && this.player.body.onFloor()) {
+                this.player.body.velocity.x = monsterSpeed * 1.7;
                 this.player.body.velocity.y = -500;
-                this.jumpTimer = this.time.now + 150;
+                this.jumping = true;
                 this.leSon.footStep();
-            }
-            if (this.rightButton.isDown) {
-                this.player.body.velocity.x = monsterSpeed * 1.2;
             }
             this.lamp.y = lampFrameOffsets[this.player.frame];
         };
         Game.prototype.render = function () {
-            // this.game.debug.text(this.player.body.onFloor(), 32, 32);
+            // this.game.debug.text(this.game.time.fpsMax.toString(), 32, 32);
+            //  this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
             // this.game.debug.body(this.monster);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
