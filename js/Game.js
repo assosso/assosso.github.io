@@ -18,8 +18,8 @@ var Assosso;
         { width: 44, height: 76 }
     ];
     var lampOffset = new Phaser.Point(72, 25);
-    var lampAngle = 1.1;
-    var lampDistance = 300;
+    var lampAngle = 2.5;
+    var lampDistance = 200;
     var lampFrameOffsets = [0, 3, 0, -2];
     var obstacleInterval = 300;
     var obstacleVariation = 100;
@@ -72,7 +72,7 @@ var Assosso;
         Game.prototype.drawLamp = function (fill, alpha) {
             var gfx = this.add.graphics(lampOffset.x, lampOffset.y);
             gfx.beginFill(fill, alpha);
-            gfx.arc(0, 0, lampDistance, -lampAngle / 2, lampAngle / 2, false);
+            gfx.arc(0, 0, lampDistance, -lampAngle / 4, lampAngle / 2, false);
             gfx.lineTo(0, 0);
             gfx.lineTo(0, -10);
             return gfx;

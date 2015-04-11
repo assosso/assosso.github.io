@@ -13,13 +13,17 @@ module Assosso {
     }
 
     preload(){
+      // Footstep
       [1,2,3,4].forEach(
         i => this.agame.load.audio('FS' + i, 'asset/son/FS/Assosso_Footstep_Running_0' + i + '.wav')
       );
 
+      // Obstacles
+
     }
 
     create(){
+      // Footstep
       [1,2,3,4].forEach(
         i => this.footSteps[i] = this.agame.add.audio('FS' + i)
       );
@@ -30,6 +34,17 @@ module Assosso {
       if (this.currentFS > 4) {this.currentFS = 1;}
       this.footSteps[this.currentFS].play();
 //      this.footSteps[Math.ceil(Math.random() * 4)].play();
+    }
+
+    obstacle( obsName:string ){
+      switch( obsName ){
+        case "bat":
+            
+          break;
+
+          default :
+          //statements;
+      }
     }
 
   } // Son

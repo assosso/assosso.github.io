@@ -12,8 +12,8 @@ module Assosso {
     { width: 44,  height: 76 }
   ];
   const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
-  const lampAngle: number = 1.1;
-  const lampDistance: number = 300;
+  const lampAngle: number = 2.5;
+  const lampDistance: number = 200;
   const lampFrameOffsets: number[] = [0, 3, 0, -2];
   const obstacleInterval: number = 300;
   const obstacleVariation: number = 100;
@@ -98,7 +98,7 @@ module Assosso {
     drawLamp(fill: number, alpha: number): PIXI.Graphics {
       var gfx = this.add.graphics(lampOffset.x, lampOffset.y);
       gfx.beginFill(fill, alpha);
-      gfx.arc(0, 0, lampDistance, -lampAngle/2, lampAngle/2, false);
+      gfx.arc(0, 0, lampDistance, -lampAngle/4, lampAngle/2, false);
       gfx.lineTo(0, 0);
       gfx.lineTo(0, -10);
       return gfx;

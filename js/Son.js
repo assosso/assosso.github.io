@@ -23,6 +23,13 @@ var Assosso;
             }
             this.footSteps[this.currentFS].play();
         };
+        Son.prototype.obstacle = function (obsName) {
+            switch (obsName) {
+                case "bat":
+                    break;
+                default:
+            }
+        };
         return Son;
     })();
     Assosso.Son = Son;
