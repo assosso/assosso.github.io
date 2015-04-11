@@ -13,6 +13,7 @@ var facing = 'right';
 var jumpTimer = 0;
 var cursors;
 var jumpButton;
+var leftButton;
 var rightButton;
 
 function create() {
