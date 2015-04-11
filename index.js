@@ -1,9 +1,10 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'Assosso',
+var game = new Phaser.Game(1000, 600, Phaser.CANVAS, 'Assosso',
  { preload: preload, create: create, update: update, render: render });
-
+ 
 function preload() {
-
-  game.load.spritesheet('dude', 'dude.png', 32, 48);
+    
+  game.load.baseURL = 'https://raw.githubusercontent.com/assosso/assosso/master/';
+  game.load.spritesheet('dude', 'asset/sprite_perso_run.png', 92, 130);
   game.load.image('background', 'background2.png');
 
 }
@@ -14,6 +15,7 @@ var jumpTimer = 0;
 var cursors;
 var jumpButton;
 var rightButton;
+var leftButton;
 
 function create() {
 
@@ -31,12 +33,14 @@ function create() {
   player.body.collideWorldBounds = true;
   player.body.gravity.y = 1000;
   player.body.maxVelocity.y = 500;
-  player.body.setSize(20, 32, 5, 16);
+  player.body.setSize(92, 130, 5, 16);
 
-  player.animations.add('left', [0, 1, 2, 3], 10, true);
-  player.animations.add('turn', [4], 20, true);
-  player.animations.add('right', [5, 6, 7, 8], 10, true);
-
+  //player.animations.add('left', [0, 1, 2, 3], 10, true);
+  //player.animations.add('turn', [4], 20, true);
+  player.animations.add('right', [0, 1, 2], 10, true);
+//sprite.animations.add('name', [ frames ], frameRate, loop);
+  player.animations.add('jump', [3], 10, false);
+  
   cursors = game.input.keyboard.createCursorKeys();
   jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
   leftButton = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -55,7 +59,8 @@ function update() {
   if (player.body.onFloor()) {
     player.animations.play('right');
   } else {
-    player.animations.stop();
+    player.animations.play('jump');
+//    player.animations.stop();
   }
 
   if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
