@@ -20,7 +20,7 @@ var Assosso;
     var lampOffset = new Phaser.Point(72, 25);
     var lampAngle = 2.5;
     var lampDistance = 200;
-    var lampFrameOffsets = [0, 3, 0, -2];
+    var lampFrameOffsets = [0, 3, 0, -2, 1000];
     var obstacleInterval = 900;
     var obstacleVariation = 100;
     function createPlayer(game) {
@@ -34,6 +34,7 @@ var Assosso;
         playerBody.setSize(50, 120, 20, 10);
         player.animations.add('right', [0, 1, 2], 10, true);
         player.animations.add('jump', [3], 10, false);
+        player.animations.add('reception', [4], 5, false);
         player.animations.play('right');
         return player;
     }
@@ -128,12 +129,11 @@ var Assosso;
                     this.player.body.velocity.x = monsterSpeed * 0.5;
                     this.slowDownUntil = this.time.now + 500;
                     this.jumping = false;
+                    this.player.animations.play('reception');
                 }
                 var velocityX = 0;
                 if (this.time.now <= this.slowDownUntil) {
                     velocityX = monsterSpeed * 0.0;
-                    this.player.animations.stop();
-                    this.player.frame = 1;
                 }
                 else {
                     velocityX = monsterSpeed * (this.rightButton.isDown ? 1.2 : 1);

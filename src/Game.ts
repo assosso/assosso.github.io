@@ -14,7 +14,7 @@ module Assosso {
   const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
   const lampAngle: number = 2.5;
   const lampDistance: number = 200;
-  const lampFrameOffsets: number[] = [0, 3, 0, -2];
+  const lampFrameOffsets: number[] = [0, 3, 0, -2, 1000];
   const obstacleInterval: number = 900;
   const obstacleVariation: number = 100;
 
@@ -31,6 +31,7 @@ module Assosso {
 
     player.animations.add('right', [0, 1, 2], 10, true);
     player.animations.add('jump', [3], 10, false);
+    player.animations.add('reception', [4], 5, false);
 
     player.animations.play('right');
 
@@ -176,13 +177,12 @@ module Assosso {
           this.player.body.velocity.x = monsterSpeed * 0.5;
           this.slowDownUntil = this.time.now + 500;
           this.jumping = false;
+          this.player.animations.play('reception');
         }
 
         var velocityX = 0;
         if (this.time.now <= this.slowDownUntil) {
           velocityX = monsterSpeed * 0.0;
-          this.player.animations.stop();
-          this.player.frame = 1;
         } else {
           velocityX = monsterSpeed * (this.rightButton.isDown?1.2:1);
           this.player.animations.play('right');
