@@ -1,5 +1,11 @@
 /// <reference path="lib/phaser.comments.d.ts" />
 /// <reference path="lib/lodash.d.ts" />
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
 var Assosso;
 (function (Assosso) {
     var monsterSpeed = 250;
@@ -28,32 +34,26 @@ var Assosso;
         monsterBody.allowGravity = false;
         return monster;
     }
-    var AssossoGame = (function () {
-        function AssossoGame() {
+    var Game = (function (_super) {
+        __extends(Game, _super);
+        function Game() {
+            _super.apply(this, arguments);
             this.facing = 'right';
             this.jumpTimer = 0;
         }
-        AssossoGame.prototype.start = function () {
-            this.game = new Phaser.Game(1000, 600, Phaser.WEBGL, 'Assosso', {
-                preload: this.preload.bind(this),
-                create: this.create.bind(this),
-                update: this.update.bind(this),
-                render: this.render.bind(this)
-            });
-        };
-        AssossoGame.prototype.preload = function () {
-            var load = this.game.load;
+        Game.prototype.preload = function () {
+            var load = this.load;
             load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
                 .spritesheet('monster', 'asset/sprite_monster_run.png', 238, 222)
                 .image('stalactite', 'asset/scenery/decor_stalactite.png');
             _.range(4).forEach(function (i) { return load.image('grotte' + i, 'asset/scenery/background_grotte' + i + '.png'); });
             _.range(5).forEach(function (i) { return load.image('grotteFond' + i, 'asset/scenery/background_grotte_fond' + i + '.png'); });
         };
-        AssossoGame.prototype.create = function () {
+        Game.prototype.create = function () {
             var _this = this;
-            this.game.world.setBounds(0, 0, levelWidth, 600);
-            this.game.stage.backgroundColor = 'rgb(32,38,51)';
-            var add = this.game.add;
+            this.world.setBounds(0, 0, levelWidth, 600);
+            this.stage.backgroundColor = 'rgb(32,38,51)';
+            var add = this.add;
             this.grotteFond = add.group();
             _.range(300, levelWidth, 900).forEach(function (x) { return add.image(x, 0, 'grotteFond' + _.random(4), undefined, _this.grotteFond); });
             this.grotte = add.group();
@@ -61,19 +61,19 @@ var Assosso;
             this.player = createPlayer(this.game);
             this.monster = createMonster(this.game);
             this.front = add.group();
-            add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.game.world.bounds.height, 'stalactite', undefined, this.front);
-            this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            this.game.physics.arcade.gravity.y = 300;
-            this.cursors = this.game.input.keyboard.createCursorKeys();
-            this.jumpButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-            this.leftButton = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            this.rightButton = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+            add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.world.bounds.height, 'stalactite', undefined, this.front);
+            this.physics.startSystem(Phaser.Physics.ARCADE);
+            this.physics.arcade.gravity.y = 300;
+            this.cursors = this.input.keyboard.createCursorKeys();
+            this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+            this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
         };
-        AssossoGame.prototype.update = function () {
-            this.game.camera.x = this.monster.x + 20;
-            this.grotteFond.x = this.game.camera.x * 0.7;
-            this.grotte.x = this.game.camera.x * 0.6;
-            this.front.x = this.game.camera.x * frontFactor;
+        Game.prototype.update = function () {
+            this.camera.x = this.monster.x + 20;
+            this.grotteFond.x = this.camera.x * 0.7;
+            this.grotte.x = this.camera.x * 0.6;
+            this.front.x = this.camera.x * frontFactor;
             this.player.body.velocity.x = monsterSpeed * 0.9;
             if (this.player.body.onFloor()) {
                 this.player.animations.play('right');
@@ -81,21 +81,62 @@ var Assosso;
             else {
                 this.player.animations.play('jump');
             }
-            if (this.jumpButton.isDown && this.player.body.onFloor() && this.game.time.now > this.jumpTimer) {
+            if (this.jumpButton.isDown && this.player.body.onFloor() && this.time.now > this.jumpTimer) {
                 this.player.body.velocity.y = -500;
-                this.jumpTimer = this.game.time.now + 150;
+                this.jumpTimer = this.time.now + 150;
             }
             if (this.rightButton.isDown) {
                 this.player.body.velocity.x = monsterSpeed * 1.2;
             }
         };
-        AssossoGame.prototype.render = function () {
+        Game.prototype.render = function () {
             // this.game.debug.text(this.player.body.onFloor(), 32, 32);
             // this.game.debug.body(this.player);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
-        return AssossoGame;
-    })();
-    new AssossoGame().start();
+        return Game;
+    })(Phaser.State);
+    Assosso.Game = Game;
+})(Assosso || (Assosso = {}));
+/// <reference path="lib/phaser.comments.d.ts" />
+/// <reference path="lib/lodash.d.ts" />
+var Assosso;
+(function (Assosso) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.init = function () {
+            this.input.maxPointers = 1;
+            this.stage.disableVisibilityChange = true;
+            if (this.game.device.desktop) {
+                this.scale.pageAlignHorizontally = true;
+            }
+            else {
+                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                this.scale.setMinMax(480, 260, 1024, 768);
+                this.scale.forceLandscape = true;
+                this.scale.pageAlignHorizontally = true;
+            }
+        };
+        Boot.prototype.preload = function () {
+        };
+        Boot.prototype.create = function () {
+            this.game.state.start('Game');
+        };
+        return Boot;
+    })(Phaser.State);
+    Assosso.Boot = Boot;
+})(Assosso || (Assosso = {}));
+/// <reference path="lib/phaser.comments.d.ts" />
+var Assosso;
+(function (Assosso) {
+    window.onload = function () {
+        var game = new Phaser.Game(1065, 600, Phaser.WEBGL, 'gameContainer');
+        game.state.add('Game', Assosso.Game);
+        game.state.add('Boot', Assosso.Boot);
+        game.state.start('Boot');
+    };
 })(Assosso || (Assosso = {}));
 //# sourceMappingURL=index.js.map

@@ -6,6 +6,8 @@
     "module": "amd"
   },
   "files": [
+    "Game.ts",
+    "Boot.ts",
     "index.ts"
   ]
 }
