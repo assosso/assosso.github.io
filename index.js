@@ -39,12 +39,14 @@ var Assosso;
             });
         };
         AssossoGame.prototype.preload = function () {
-            this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130);
-            this.game.load.spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222);
+            this.game.load.spritesheet('bob', 'asset/sprite_perso_run.png', 92, 130)
+                .spritesheet('monster', 'asset/sprite_monster_run.png', 240, 222)
+                .image('stalactite', 'asset/scenery/decor_stalactite.png');
         };
         AssossoGame.prototype.create = function () {
             this.game.world.setBounds(0, 0, 24000, 600);
             this.game.stage.backgroundColor = 'rgb(32,38,51)';
+            this.game.add.tileSprite(0, 0, this.game.world.bounds.width, this.game.world.bounds.height, 'stalactite');
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.game.physics.arcade.gravity.y = 300;
             this.cursors = this.game.input.keyboard.createCursorKeys();
