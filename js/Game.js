@@ -40,11 +40,12 @@ var Assosso;
         var monster = game.add.sprite(0, 0, 'monster');
         monster.y = levelHeight - monster.height + 20;
         game.physics.enable(monster, Phaser.Physics.ARCADE);
-        monster.animations.add('right', [0, 1, 2], 10, true);
+        monster.animations.add('right', _.range(6), 10, true);
         monster.animations.play('right');
         var monsterBody = monster.body;
         monsterBody.velocity.x = monsterSpeed;
         monsterBody.allowGravity = false;
+        monsterBody.setSize(390, 350, 0, 60);
         return monster;
     }
     var Game = (function (_super) {
@@ -138,7 +139,7 @@ var Assosso;
         };
         Game.prototype.render = function () {
             // this.game.debug.text(this.player.body.onFloor(), 32, 32);
-            // this.game.debug.body(this.player);
+            // this.game.debug.body(this.monster);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
         return Game;
