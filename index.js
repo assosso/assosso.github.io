@@ -13,6 +13,7 @@ var facing = 'right';
 var jumpTimer = 0;
 var cursors;
 var jumpButton;
+var rightButton;
 
 function create() {
 
@@ -38,6 +39,9 @@ function create() {
 
   cursors = game.input.keyboard.createCursorKeys();
   jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+  leftButton = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+  rightButton = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+  
   player.animations.play('right');
 }
 
