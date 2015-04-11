@@ -33,6 +33,10 @@ module Assosso {
           type.actionAudio = this.agame.add.audio(type.action);
         }
       );
+
+      // Musique
+      var gameTheme = this.agame.add.audio('game-theme');
+      gameTheme.loopFull(0.6);
     }
 
     footStep(){

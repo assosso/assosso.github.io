@@ -24,7 +24,7 @@ var Assosso;
     var lampFrameOffsets = [0, 3, 0, -2, 1000, 1000];
     var obstacleInterval = 900;
     var obstacleVariation = 100;
-    var detectorDistance = 400;
+    var detectorDistance = 600;
     function createPlayer(game) {
         var player = game.add.sprite(600, 0, 'bob');
         player.y = levelHeight - player.height;
@@ -138,7 +138,7 @@ var Assosso;
             })) {
                 this.detectedObstacle = null;
             }
-            this.camera.x = this.monster.x + 120;
+            this.camera.x = this.monster.x + 180;
             this.grotteFond.x = this.camera.x * 0.1;
             this.grotte.x = this.camera.x * 0.0;
             this.front.x = this.camera.x * frontFactor;
@@ -172,7 +172,7 @@ var Assosso;
         };
         Game.prototype.render = function () {
             //this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
-            //this.game.debug.body(this.obstacleDetector);
+            // this.game.debug.body(this.obstacleDetector);
             // this.game.debug.bodyInfo(this.player, 16, 24);
         };
         return Game;

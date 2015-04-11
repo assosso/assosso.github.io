@@ -20,6 +20,8 @@ var Assosso;
                 type.audio = _this.agame.add.audio(type.assetKey);
                 type.actionAudio = _this.agame.add.audio(type.action);
             });
+            var gameTheme = this.agame.add.audio('game-theme');
+            gameTheme.loopFull(0.6);
         };
         Son.prototype.footStep = function () {
             this.currentFS = this.currentFS + 1;

@@ -18,7 +18,7 @@ module Assosso {
   const lampFrameOffsets: number[] = [0, 3, 0, -2, 1000, 1000];
   const obstacleInterval: number = 900;
   const obstacleVariation: number = 100;
-  const detectorDistance: number = 400;
+  const detectorDistance: number = 600;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
     var player = game.add.sprite(600, 0, 'bob');
@@ -188,7 +188,7 @@ module Assosso {
         this.detectedObstacle = null;
       }
 
-      this.camera.x = this.monster.x + 120;
+      this.camera.x = this.monster.x + 180;
       this.grotteFond.x = this.camera.x * 0.1;
       this.grotte.x = this.camera.x * 0.0;
       this.front.x = this.camera.x * frontFactor;
@@ -229,7 +229,7 @@ module Assosso {
     render () {
 
       //this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
-      //this.game.debug.body(this.obstacleDetector);
+      // this.game.debug.body(this.obstacleDetector);
       // this.game.debug.bodyInfo(this.player, 16, 24);
 
     }

@@ -26,6 +26,8 @@
     { "type": "audio", "key": "chauve-souris", "urls": ["asset/son/obstacle/chauve-souris.wav"] },
 
     { "type": "audio", "key": "saute",         "urls": ["asset/son/obstacle/saute.wav"] },
-    { "type": "audio", "key": "glissade",      "urls": ["asset/son/obstacle/glissade.wav"] }
+    { "type": "audio", "key": "glissade",      "urls": ["asset/son/obstacle/glissade.wav"] },
+
+    { "type": "audio", "key": "game-theme",    "urls": ["asset/son/music/Music_Theme_Loop.ogg", "asset/son/music/Music_Theme_Loop.mp3"] }
   ]
 }
