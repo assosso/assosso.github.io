@@ -71,7 +71,7 @@ module Assosso {
           // nom obstacle + action
           this.playInSequence(type.audio[0], type.actionAudio);
         break;
-        case 1:
+        case 2:
           // nom obstacle
           type.audio[0].play();
         break;
