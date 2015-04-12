@@ -8,6 +8,7 @@ module Assosso {
     currentFS: number = 0;
     slideSounds: Phaser.Sound[]=[];
     currentSlide: number = 0;
+    deathSound: Phaser.Sound;
 
     gameTheme: Phaser.Sound;
     gameAmbience: Phaser.Sound;
@@ -29,6 +30,7 @@ module Assosso {
     create(){
       this.footSteps = this.createSounds(/^FS/, Assosso.param.footstepVolume);
       this.slideSounds = this.createSounds(/^Slide/, Assosso.param.slideVolume);
+      this.deathSound = this.agame.add.audio("death", Assosso.param.deathVolume);
 
       // Obstacles
       Assosso.param.obstacleTypes.forEach(
@@ -60,6 +62,10 @@ module Assosso {
     slide() {
       this.currentSlide = (this.currentSlide + 1) % this.slideSounds.length;
       this.slideSounds[this.currentSlide].play();
+    }
+
+    death() {
+      this.deathSound.play();
     }
 
     obstacle( obs: any ){

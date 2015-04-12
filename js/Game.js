@@ -159,6 +159,7 @@ var Assosso;
                     this.world.add(deathSprite);
                     deathSprite.animations.play('death');
                     this.obstacles.mask = null;
+                    this.leSon.death();
                 }
             }
             if (this.dead) {

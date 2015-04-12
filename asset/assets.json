@@ -42,6 +42,8 @@
     { "type": "audio", "key": "chauve-souris3", "urls": ["asset/son/obstacle/chauve-souris_poulet.mp3"] },
     { "type": "audio", "key": "chauve-souris4", "urls": ["asset/son/obstacle/chauve-souris_perroquet.mp3"] },
 
+    { "type": "audio", "key": "death",   "urls": ["asset/death/death.wav"] },
+
     { "type": "audio", "key": "piege-a-loup0",  "urls": ["asset/son/obstacle/piege-a-loup.mp3"] },
     { "type": "audio", "key": "piege-a-loup1",  "urls": ["asset/son/obstacle/piege-a-loup_pacman.mp3"] },
     { "type": "audio", "key": "piege-a-loup2",  "urls": ["asset/son/obstacle/piege-a-loup_pied.mp3"] },

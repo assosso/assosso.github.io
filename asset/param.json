@@ -24,17 +24,17 @@
     { "assetKey": "piege-a-loup", "action": "saute",                     "bodySize": { "width": 71,  "height": 47,  "x": 20, "y": 26 },
       "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true },
       "deathOffset": { "x": -72, "y": -39 },
-      "volume": 0.6, "actionVolume": 0.6},
+      "volume": 0.25, "actionVolume": 0.25 },
     { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
       "deathOffset": { "x": -100, "y": -20 },
-      "volume": 0.6, "actionVolume": 0.6 },
+      "volume": 0.25, "actionVolume": 0.25 },
     { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
       "deathOffset": { "x": -88, "y": 0 },
-      "volume": 0.6, "actionVolume": 0.6 },
+      "volume": 0.25, "actionVolume": 0.25 },
     { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 },
       "animation": { "key": "fly", "frames": null, "frameRate": 10, "loop": true },
       "deathOffset": { "x": -70, "y": 73 },
-      "volume": 0.6, "actionVolume": 0.6 }
+      "volume": 0.25, "actionVolume": 0.25 }
   ],
   "lampColor": "0xffff00",
   "lampAlpha": 0.2,
@@ -64,8 +64,9 @@
   ],
   "debug": false,
 
-  "musicVolume": 0.6,
-  "ambienceVolume": 0.6,
-  "footstepVolume": 0.2,
-  "slideVolume": 0.3
+  "musicVolume": 1.0,
+  "ambienceVolume": 0.8,
+  "footstepVolume": 0.4,
+  "slideVolume": 0.6,
+  "deathVolume": 1.0
 }
