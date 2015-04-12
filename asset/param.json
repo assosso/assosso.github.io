@@ -2,6 +2,7 @@
   "monsterSpeed": 350,
   "monsterPosition": { "x": -180, "y": 20 },
   "runSpeed": 1.0,
+  "accelSpeed": 1.1,
   "playerStartX": 600,
   "playerBodySizes": {
     "run":   { "width": 50, "height": 120, "x": 30, "y": 10 },

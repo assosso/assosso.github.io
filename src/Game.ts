@@ -33,6 +33,7 @@ module Assosso {
     monsterPosition: Point;
     playerStartX: number;
     runSpeed: number;
+    accelSpeed: number;
     playerBodySizes: { [key: string]: BodySize };
     playerAnimations: Animation[];
     monsterBodySize: BodySize;
@@ -59,6 +60,7 @@ module Assosso {
     jumpSlowDownTime: number;
     backgrounds: BackgroundData[];
     debug: boolean;
+
   }
   export var param: Param;
 
@@ -156,6 +158,7 @@ module Assosso {
     noSlideUntil: number = 0;
     cursors: Phaser.CursorKeys;
     jumpButton: Phaser.Key;
+    rightButton: Phaser.Key;
     slideButton: Phaser.Key;
     leftButton: Phaser.Key;
     obstacles: Phaser.Group;
@@ -230,6 +233,7 @@ module Assosso {
       this.cursors = this.input.keyboard.createCursorKeys();
       this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
       this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+      this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
       this.slideButton = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
       this.leSon.create();
@@ -290,6 +294,10 @@ module Assosso {
           this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
           this.player.animations.play('slide');
         }
+      }
+
+      if (this.rightButton.isDown) {
+        this.player.body.velocity.x = param.monsterSpeed * param.accelSpeed;
       }
 
       var lampFrameOffset = param.lampFrameOffsets[this.player.frame];
