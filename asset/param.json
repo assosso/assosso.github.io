@@ -22,13 +22,13 @@
   "obstacleTypes": [
     { "assetKey": "piege-a-loup", "action": "saute",                     "bodySize": { "width": 71,  "height": 47,  "x": 20, "y": 26 },
       "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true },
-      "volume": 1.0, "actionVolume": 1.0 },
+      "volume": 0.75, "actionVolume": 0.75 },
     { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
-      "volume": 1.0, "actionVolume": 1.0 },
+      "volume": 0.75, "actionVolume": 0.75 },
     { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
-      "volume": 1.0, "actionVolume": 1.0 },
+      "volume": 0.75, "actionVolume": 0.75 },
     { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 },
-      "volume": 1.0, "actionVolume": 1.0 }
+      "volume": 0.75, "actionVolume": 0.75 }
   ],
   "lampColor": "0xffff00",
   "lampAlpha": 0.2,
@@ -58,7 +58,7 @@
   ],
   "debug": false,
 
-  "musicVolume": 0.5,
+  "musicVolume": 0.6,
   "ambienceVolume": 0.5,
-  "footstepVolume": 0.1
+  "footstepVolume": 0.2
 }
