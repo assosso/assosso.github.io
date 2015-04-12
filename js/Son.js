@@ -32,6 +32,17 @@ var Assosso;
             this.gameAmbience = this.agame.add.audio('game-ambience');
             this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
         };
+        Son.prototype.shutdown = function () {
+            this.footSteps.forEach(function (s) { return s.destroy(); });
+            this.slideSounds.forEach(function (s) { return s.destroy(); });
+            this.deathSound.destroy();
+            Assosso.param.obstacleTypes.forEach(function (type) {
+                type.audio.forEach(function (s) { return s.destroy(); });
+                type.actionAudio.destroy();
+            });
+            this.gameTheme.destroy();
+            this.gameAmbience.destroy();
+        };
         Son.prototype.ready = function () {
             return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
         };

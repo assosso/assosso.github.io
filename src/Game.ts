@@ -171,6 +171,7 @@ module Assosso {
 
   export class Game extends Phaser.State {
     player: Phaser.Sprite;
+    backgrounds: Phaser.Group[];
     dead: boolean = false;
     monster: Phaser.Sprite;
     slowDownUntil: number = 0;
@@ -223,7 +224,13 @@ module Assosso {
     }
 
     create() {
-      Assosso.param = this.cache.getJSON('param');
+      this.dead = false;
+      this.slowDownUntil = 0;
+      this.jumping = false;
+      this.slidingUntil = 0;
+      this.noSlideUntil = 0;
+
+      Assosso.param = _.cloneDeep(this.cache.getJSON('param'));
 
       this.world.setBounds(0, 0, param.levelWidth, param.levelHeight);
 
@@ -241,7 +248,7 @@ module Assosso {
 
       this.monster = createMonster(this.game);
 
-      param.backgrounds.forEach((b)=>createBackground(this.game, b));
+      this.backgrounds = param.backgrounds.map((b)=>createBackground(this.game, b));
 
       createDeaths(this.game);
 
@@ -265,6 +272,10 @@ module Assosso {
 
       this.input.onDown.add(()=>this.downLocation = this.input.position.clone());
       this.input.onUp.add(()=> {
+        if (this.dead) {
+          this.game.state.restart();
+          return;
+        }
         var delta = Phaser.Point.subtract(this.input.position, this.downLocation);
         if (delta.y > 50) {
           this.swipeCommand = "down";
@@ -272,6 +283,14 @@ module Assosso {
           this.swipeCommand = "up";
         }
       });
+    }
+
+    shutdown() {
+      this.monster.destroy();
+      this.obstacles.destroy();
+      this.player.destroy();
+      param.obstacleTypes.forEach(type=>type.deathSprite.destroy());
+      this.leSon.shutdown();
     }
 
     update() {

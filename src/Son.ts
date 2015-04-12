@@ -49,6 +49,23 @@ module Assosso {
       this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
     }
 
+    shutdown() {
+      this.footSteps.forEach(s=>s.destroy());
+      this.slideSounds.forEach(s=>s.destroy());
+      this.deathSound.destroy();
+
+      // Obstacles
+      Assosso.param.obstacleTypes.forEach(
+        type => {
+          type.audio.forEach(s=>s.destroy());
+          type.actionAudio.destroy();
+        }
+      );
+
+      this.gameTheme.destroy();
+      this.gameAmbience.destroy();
+    }
+
     ready(): boolean {
       return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
     }

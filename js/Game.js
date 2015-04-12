@@ -112,7 +112,12 @@ var Assosso;
         };
         Game.prototype.create = function () {
             var _this = this;
-            Assosso.param = this.cache.getJSON('param');
+            this.dead = false;
+            this.slowDownUntil = 0;
+            this.jumping = false;
+            this.slidingUntil = 0;
+            this.noSlideUntil = 0;
+            Assosso.param = _.cloneDeep(this.cache.getJSON('param'));
             this.world.setBounds(0, 0, Assosso.param.levelWidth, Assosso.param.levelHeight);
             this.stage.backgroundColor = Assosso.param.backgroundColor;
             this.obstacles = createObstacles(this.game);
@@ -121,7 +126,7 @@ var Assosso;
             this.player.addChild(this.lamp);
             this.obstacles.mask = this.lamp.lampMask;
             this.monster = createMonster(this.game);
-            Assosso.param.backgrounds.forEach(function (b) { return createBackground(_this.game, b); });
+            this.backgrounds = Assosso.param.backgrounds.map(function (b) { return createBackground(_this.game, b); });
             createDeaths(this.game);
             this.obstacleDetector = this.add.sprite(0, 0, null);
             this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
@@ -138,6 +143,10 @@ var Assosso;
             this.leSon.create();
             this.input.onDown.add(function () { return _this.downLocation = _this.input.position.clone(); });
             this.input.onUp.add(function () {
+                if (_this.dead) {
+                    _this.game.state.restart();
+                    return;
+                }
                 var delta = Phaser.Point.subtract(_this.input.position, _this.downLocation);
                 if (delta.y > 50) {
                     _this.swipeCommand = "down";
@@ -146,6 +155,13 @@ var Assosso;
                     _this.swipeCommand = "up";
                 }
             });
+        };
+        Game.prototype.shutdown = function () {
+            this.monster.destroy();
+            this.obstacles.destroy();
+            this.player.destroy();
+            Assosso.param.obstacleTypes.forEach(function (type) { return type.deathSprite.destroy(); });
+            this.leSon.shutdown();
         };
         Game.prototype.update = function () {
             var _this = this;
