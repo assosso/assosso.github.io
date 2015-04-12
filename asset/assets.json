@@ -26,10 +26,32 @@
     { "type": "audio", "key": "FS3",  "urls": ["asset/son/FS/Assosso_Footstep_Running_03.wav"] },
     { "type": "audio", "key": "FS4",  "urls": ["asset/son/FS/Assosso_Footstep_Running_04.wav"] },
 
-    { "type": "audio", "key": "piege-a-loup",  "urls": ["asset/son/obstacle/piege-a-loup.mp3"] },
-    { "type": "audio", "key": "rocher",        "urls": ["asset/son/obstacle/rocher.mp3"] },
-    { "type": "audio", "key": "pic",           "urls": ["asset/son/obstacle/pic.mp3"] },
+
     { "type": "audio", "key": "chauve-souris", "urls": ["asset/son/obstacle/chauve-souris.mp3"] },
+    { "type": "audio", "key": "chauve-souris1", "urls": ["asset/son/obstacle/chauve-souris_batman.mp3"] },
+    { "type": "audio", "key": "chauve-souris2", "urls": ["asset/son/obstacle/chauve-souris_pterodactile.mp3"] },
+    { "type": "audio", "key": "chauve-souris3", "urls": ["asset/son/obstacle/chauve-souris_poulet.mp3"] },
+    { "type": "audio", "key": "chauve-souris4", "urls": ["asset/son/obstacle/chauve-souris_perroquet.mp3"] },
+
+    { "type": "audio", "key": "piege-a-loup",  "urls": ["asset/son/obstacle/piege-a-loup.mp3"] },
+    { "type": "audio", "key": "piege-a-loup1",  "urls": ["asset/son/obstacle/piege-a-loup_pacman.mp3"] },
+    { "type": "audio", "key": "piege-a-loup2",  "urls": ["asset/son/obstacle/piege-a-loup_pied.mp3"] },
+    { "type": "audio", "key": "piege-a-loup3",  "urls": ["asset/son/obstacle/piege-a-loup_pince.mp3"] },
+    { "type": "audio", "key": "piege-a-loup4",  "urls": ["asset/son/obstacle/piege-a-loup_wolftrap.mp3"] },
+
+    { "type": "audio", "key": "rocher",        "urls": ["asset/son/obstacle/rocher.mp3"] },
+    { "type": "audio", "key": "rocher1",        "urls": ["asset/son/obstacle/rocher_bouse.mp3"] },
+    { "type": "audio", "key": "rocher2",        "urls": ["asset/son/obstacle/rocher_caillou.mp3"] },
+    { "type": "audio", "key": "rocher3",        "urls": ["asset/son/obstacle/rocher_pave.mp3"] },
+    { "type": "audio", "key": "rocher4",        "urls": ["asset/son/obstacle/rocher_pierre.mp3"] },
+    { "type": "audio", "key": "rocher5",        "urls": ["asset/son/obstacle/rocher_rock.mp3"] },
+
+    { "type": "audio", "key": "pic",           "urls": ["asset/son/obstacle/pic.mp3"] },
+    { "type": "audio", "key": "pic1",           "urls": ["asset/son/obstacle/pic_cactus.mp3"] },
+    { "type": "audio", "key": "pic2",           "urls": ["asset/son/obstacle/pic_lance.mp3"] },
+    { "type": "audio", "key": "pic3",           "urls": ["asset/son/obstacle/pic_spike.mp3"] },
+    { "type": "audio", "key": "pic4",           "urls": ["asset/son/obstacle/pic_toureiffel.mp3"] },
+    
 
     { "type": "audio", "key": "saute",         "urls": ["asset/son/obstacle/saute.mp3"] },
     { "type": "audio", "key": "glissade",      "urls": ["asset/son/obstacle/glissade.mp3"] },
