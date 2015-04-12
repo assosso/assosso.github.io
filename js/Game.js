@@ -88,6 +88,8 @@ var Assosso;
             this.swipeCommand = null;
         }
         Game.prototype.preload = function () {
+            if (this.cache.checkJSONKey('param'))
+                return;
             this.load.pack('main', 'asset/assets.json');
             this.load.json('param', 'asset/param.json');
             this.leSon = new Assosso.Son(this);

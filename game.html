@@ -18,6 +18,11 @@
     <body>
       <div id="game"></div>
       <div id="orientation"></div>
+      <script>
+        document.body.addEventListener('touchmove', function(evt) {
+          evt.preventDefault();
+        })
+      </script>
       <script src="js/Son.js"></script>
       <script src="js/Boot.js"></script>
       <script src="js/Game.js"></script>

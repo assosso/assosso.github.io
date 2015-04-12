@@ -192,6 +192,9 @@ module Assosso {
     swipeCommand: string = null;
 
     preload() {
+      if (this.cache.checkJSONKey('param'))
+        return;
+
       this.load.pack('main', 'asset/assets.json');
       this.load.json('param', 'asset/param.json');
 
