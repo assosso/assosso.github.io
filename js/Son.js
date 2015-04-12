@@ -5,15 +5,22 @@ var Assosso;
     var Son = (function () {
         function Son(agame) {
             this.agame = agame;
-            this.currentFS = 0;
             this.footSteps = [];
+            this.currentFS = 0;
+            this.slideSounds = [];
+            this.currentSlide = 0;
         }
         Son.prototype.preload = function () {
         };
+        Son.prototype.createSounds = function (regexp, volume) {
+            var _this = this;
+            var keys = this.agame.cache.getKeys(Phaser.Cache.SOUND).filter(function (k) { return regexp.test(k); });
+            return keys.map(function (k) { return _this.agame.add.audio(k, volume); });
+        };
         Son.prototype.create = function () {
             var _this = this;
-            var footstepKeys = this.agame.cache.getKeys(Phaser.Cache.SOUND).filter(function (k) { return /^FS/.test(k); });
-            footstepKeys.forEach(function (k) { return _this.footSteps.push(_this.agame.add.audio(k, Assosso.param.footstepVolume)); });
+            this.footSteps = this.createSounds(/^FS/, Assosso.param.footstepVolume);
+            this.slideSounds = this.createSounds(/^Slide/, Assosso.param.slideVolume);
             Assosso.param.obstacleTypes.forEach(function (type) {
                 type.Nbplay = 0;
                 type.audio = _this.agame.add.audio(type.assetKey, type.volume);
@@ -30,6 +37,10 @@ var Assosso;
         Son.prototype.footStep = function () {
             this.currentFS = (this.currentFS + 1) % this.footSteps.length;
             this.footSteps[this.currentFS].play();
+        };
+        Son.prototype.slide = function () {
+            this.currentSlide = (this.currentSlide + 1) % this.slideSounds.length;
+            this.slideSounds[this.currentSlide].play();
         };
         Son.prototype.obstacle = function (obs) {
             var type = obs.obstacleType;

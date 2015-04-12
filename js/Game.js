@@ -176,6 +176,7 @@ var Assosso;
                 else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
                     this.slidingUntil = this.time.now + Assosso.param.slideTime;
                     this.noSlideUntil = this.slidingUntil + Assosso.param.slideCoolDown;
+                    this.leSon.slide();
                     this.player.animations.play('slide');
                 }
             }

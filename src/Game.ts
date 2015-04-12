@@ -66,6 +66,7 @@ module Assosso {
     musicVolume: number;
     ambienceVolume: number;
     footstepVolume: number;
+    slideVolume: number;
   }
   export var param: Param;
 
@@ -297,6 +298,7 @@ module Assosso {
         } else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
           this.slidingUntil = this.time.now + param.slideTime;
           this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
+          this.leSon.slide();
           this.player.animations.play('slide');
         }
       }

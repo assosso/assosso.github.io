@@ -26,6 +26,11 @@
     { "type": "audio", "key": "FS3",  "urls": ["asset/son/FS/Assosso_Footstep_Running_03.wav"] },
     { "type": "audio", "key": "FS4",  "urls": ["asset/son/FS/Assosso_Footstep_Running_04.wav"] },
 
+    { "type": "audio", "key": "Slide1",  "urls": ["asset/son/FS/Assosso_Character_Slide_01.wav"] },
+    { "type": "audio", "key": "Slide2",  "urls": ["asset/son/FS/Assosso_Character_Slide_02.wav"] },
+    { "type": "audio", "key": "Slide3",  "urls": ["asset/son/FS/Assosso_Character_Slide_03.wav"] },
+    { "type": "audio", "key": "Slide4",  "urls": ["asset/son/FS/Assosso_Character_Slide_04.wav"] },
+
     { "type": "audio", "key": "piege-a-loup",  "urls": ["asset/son/obstacle/piege-a-loup.mp3"] },
     { "type": "audio", "key": "rocher",        "urls": ["asset/son/obstacle/rocher.mp3"] },
     { "type": "audio", "key": "pic",           "urls": ["asset/son/obstacle/pic.mp3"] },

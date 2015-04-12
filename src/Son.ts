@@ -4,8 +4,10 @@
 module Assosso {
   export class Son {
 
-    currentFS: number = 0;
     footSteps: Phaser.Sound[]=[];
+    currentFS: number = 0;
+    slideSounds: Phaser.Sound[]=[];
+    currentSlide: number = 0;
 
     gameTheme: Phaser.Sound;
     gameAmbience: Phaser.Sound;
@@ -17,12 +19,16 @@ module Assosso {
     preload(){
     }
 
-    create(){
-      // Footstep
-      var footstepKeys:string[] = (<any>this.agame.cache).getKeys(Phaser.Cache.SOUND).filter(k=>/^FS/.test(k));
-      footstepKeys.forEach(
-        k => this.footSteps.push(this.agame.add.audio(k, Assosso.param.footstepVolume))
+    createSounds(regexp, volume) {
+      var keys:string[] = (<any>this.agame.cache).getKeys(Phaser.Cache.SOUND).filter(k=>regexp.test(k));
+      return keys.map(
+        k => this.agame.add.audio(k, volume)
       );
+    }
+
+    create(){
+      this.footSteps = this.createSounds(/^FS/, Assosso.param.footstepVolume);
+      this.slideSounds = this.createSounds(/^Slide/, Assosso.param.slideVolume);
 
       // Obstacles
       Assosso.param.obstacleTypes.forEach(
@@ -49,6 +55,11 @@ module Assosso {
       // enchainement des 4 footStep different
       this.currentFS = (this.currentFS + 1) % this.footSteps.length;
       this.footSteps[this.currentFS].play();
+    }
+
+    slide() {
+      this.currentSlide = (this.currentSlide + 1) % this.slideSounds.length;
+      this.slideSounds[this.currentSlide].play();
     }
 
     obstacle( obs: any ){
