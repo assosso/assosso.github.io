@@ -60,12 +60,9 @@ module Assosso {
           // nom obstacle + action
           this.playInSequence(type.audio, type.actionAudio);
         break;
-        case 2:
+        default:
           // nom obstacle
           type.audio.play();
-        break;
-        default :
-          // nom obstacle etrange
         break;
 
       }
