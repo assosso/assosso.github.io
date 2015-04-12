@@ -38,10 +38,8 @@ var Assosso;
                 case 1:
                     this.playInSequence(type.audio, type.actionAudio);
                     break;
-                case 2:
-                    type.audio.play();
-                    break;
                 default:
+                    type.audio.play();
                     break;
             }
         };
