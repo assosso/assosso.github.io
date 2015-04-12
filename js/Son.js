@@ -16,7 +16,7 @@ var Assosso;
         Son.prototype.create = function () {
             var _this = this;
             [1, 2, 3, 4].forEach(function (i) { return _this.footSteps[i] = _this.agame.add.audio('FS' + i); });
-            Assosso.obstacleTypes.forEach(function (type) {
+            Assosso.param.obstacleTypes.forEach(function (type) {
                 type.audio = _this.agame.add.audio(type.assetKey);
                 type.actionAudio = _this.agame.add.audio(type.action);
             });

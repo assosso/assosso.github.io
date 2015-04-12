@@ -1,13 +1,14 @@
 {
   "main": [
-    { "type": "spritesheet", "key": "perso", "url": "asset/perso_sprites.png", "frameWidth": 106, "frameHeight": 129 },
-    { "type": "spritesheet", "key": "monster", "url": "asset/sprite_monster_run.png", "frameWidth": 476, "frameHeight": 444 },
-    { "type": "image", "key": "stalactite", "url": "asset/scenery/decor_stalactite.png" },
+    { "type": "spritesheet", "key": "perso",      "url": "asset/perso_sprites.png",           "frameWidth": 106, "frameHeight": 129 },
+    { "type": "spritesheet", "key": "monster",    "url": "asset/sprite_monster_run.png",      "frameWidth": 476, "frameHeight": 444 },
 
     { "type": "spritesheet", "key": "piege-a-loup",  "url": "asset/obstacles/piege-a-loup.png", "frameWidth": 105, "frameHeight": 73 },
     { "type": "spritesheet", "key": "rocher",        "url": "asset/obstacles/rocher.png", "frameWidth": 159, "frameHeight": 56 },
     { "type": "spritesheet", "key": "pic",           "url": "asset/obstacles/pic.png", "frameWidth": 44, "frameHeight": 76 },
     { "type": "spritesheet", "key": "chauve-souris", "url": "asset/obstacles/chauve-souris.png", "frameWidth": 58, "frameHeight": 57 },
+
+    { "type": "image", "key": "stalactite", "url": "asset/scenery/decor_stalactite.png" },
 
     { "type": "image", "key": "grotte0", "url": "asset/scenery/background_grotte0.png" },
     { "type": "image", "key": "grotte1", "url": "asset/scenery/background_grotte1.png" },

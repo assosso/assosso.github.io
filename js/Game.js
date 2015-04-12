@@ -8,137 +8,132 @@ var __extends = this.__extends || function (d, b) {
 };
 var Assosso;
 (function (Assosso) {
-    var monsterSpeed = 350;
-    var levelWidth = 24000;
-    var levelHeight = 600;
-    var frontFactor = -0.1;
-    Assosso.obstacleTypes = [
-        { assetKey: "piege-a-loup", action: "saute" },
-        { assetKey: "rocher", action: "saute" },
-        { assetKey: "pic", action: "saute" },
-        { assetKey: "chauve-souris", action: "glissade", altitude: 80 }
-    ];
-    var lampOffset = new Phaser.Point(72, 25);
-    var lampAngle = 2.5;
-    var lampDistance = 200;
-    var lampFrameOffsets = [{ x: 0, y: 0 }, { x: 0, y: 3 }, { x: 0, y: 0 }, { x: 0, y: -2 },
-        { x: 0, y: 1000 }, { x: 0, y: 1000 },
-        { x: -25, y: 48 }, { x: -25, y: 50 }, { x: -25, y: 49 }];
-    var obstacleInterval = 900;
-    var obstacleVariation = 100;
-    var detectorDistance = 600;
-    var jumpSpeedBoost = 1.7;
-    var slideTime = 400;
-    var slideCoolDown = 300;
-    var obstacleSlowDownTime = 200;
-    var jumpSlowDownTime = 500;
+    ;
+    ;
+    Assosso.param;
+    function setBodySize(sprite, bodySize) {
+        sprite.body.setSize(bodySize.width, bodySize.height, bodySize.x, bodySize.y);
+    }
+    function createAnimations(sprite, animations) {
+        animations.forEach(function (anim) { return sprite.animations.add(anim.key, anim.frames, anim.frameRate, anim.loop); });
+    }
     function createPlayer(game) {
-        var player = game.add.sprite(600, 0, 'perso');
-        player.y = levelHeight - player.height;
+        var player = game.add.sprite(Assosso.param.playerStartX, 0, 'perso');
+        player.y = Assosso.param.levelHeight - player.height;
         game.physics.enable(player, Phaser.Physics.ARCADE);
         var playerBody = player.body;
         playerBody.collideWorldBounds = true;
-        playerBody.gravity.y = 1000;
-        playerBody.maxVelocity.y = 500;
-        playerBody.setSize(50, 120, 20, 10);
-        player.animations.add('right', [0, 1, 2], 10, true);
-        player.animations.add('jump', [3], 10, false);
-        player.animations.add('reception', [4, 5], 3, true);
-        player.animations.add('slide', [6, 7, 8], 10, true);
+        createAnimations(player, Assosso.param.playerAnimations);
         player.animations.play('right');
+        setBodySize(player, Assosso.param.playerBodySizes['run']);
         return player;
     }
     function createMonster(game) {
         var monster = game.add.sprite(0, 0, 'monster');
-        monster.y = levelHeight - monster.height + 20;
+        monster.y = Assosso.param.levelHeight - monster.height + Assosso.param.monsterPosition.y;
         game.physics.enable(monster, Phaser.Physics.ARCADE);
-        monster.animations.add('right', null, 10, true);
+        createAnimations(monster, Assosso.param.monsterAnimations);
         monster.animations.play('right');
         var monsterBody = monster.body;
-        monsterBody.velocity.x = monsterSpeed;
+        monsterBody.velocity.x = Assosso.param.monsterSpeed;
         monsterBody.allowGravity = false;
-        monsterBody.setSize(390, 350, 0, 60);
+        setBodySize(monster, Assosso.param.monsterBodySize);
         return monster;
+    }
+    function generateXPositions(config, callback) {
+        _.range(config.x0, Assosso.param.levelWidth, config.deltaX).forEach(function (x) { return callback(x + _.random(-config.variation / 2, config.variation / 2)); });
     }
     function createObstacles(game) {
         var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
-        _.range(2000, levelWidth, obstacleInterval).forEach(function (x) {
-            var type = _.sample(Assosso.obstacleTypes);
-            var obstacle = obstacles.create(x + _.random(-obstacleVariation / 2, obstacleVariation / 2), 0, type.assetKey);
+        generateXPositions(Assosso.param.obstaclePositionConfig, function (x) {
+            var type = _.sample(Assosso.param.obstacleTypes);
+            var obstacle = obstacles.create(x, 0, type.assetKey);
             obstacle.body.immovable = true;
             obstacle.body.allowGravity = false;
-            obstacle.y = levelHeight - obstacle.height - ~~type.altitude;
-            obstacle.animations.add('clap', null, 10, true);
-            obstacle.animations.play('clap');
-            obstacle.body.setSize(obstacle.width * 0.8, obstacle.height * 0.8, 0, obstacle.height * 0.2);
+            obstacle.y = Assosso.param.levelHeight - obstacle.height - ~~type.altitude;
+            if (type.animation) {
+                createAnimations(obstacle, [type.animation]);
+                obstacle.animations.play(type.animation.key);
+            }
+            setBodySize(obstacle, type.bodySize);
             obstacle.obstacleType = type;
         });
         return obstacles;
+    }
+    function createBackground(game, data) {
+        var group = game.add.group(null);
+        group.classType = Phaser.Image;
+        var assetRE = new RegExp(data.assetRegExp);
+        var keys = game.cache.getKeys(Phaser.Cache.IMAGE).filter(function (k) { return k.match(assetRE); });
+        generateXPositions(data.positionConfig, function (x) { return group.create(x, 0, _.sample(keys)); });
+        game.world.addAt(group, data.inFront ? game.world.children.length : 0);
+        data.group = group;
+        return group;
     }
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
             _super.apply(this, arguments);
-            this.facing = 'right';
             this.slowDownUntil = 0;
             this.jumping = false;
             this.slidingUntil = 0;
             this.noSlideUntil = 0;
         }
         Game.prototype.preload = function () {
-            var load = this.load;
-            load.pack('main', 'asset/assets.json');
+            this.load.pack('main', 'asset/assets.json');
+            this.load.json('param', 'asset/param.json');
             this.leSon = new Assosso.Son(this);
             this.leSon.preload();
         };
         Game.prototype.drawLamp = function (fill, alpha) {
-            var gfx = this.add.graphics(lampOffset.x, lampOffset.y);
+            var gfx = this.add.graphics(Assosso.param.lampOffset.x, Assosso.param.lampOffset.y);
             gfx.beginFill(fill, alpha);
-            gfx.arc(0, 0, lampDistance, -lampAngle / 4, lampAngle / 2, false);
+            gfx.arc(0, 0, Assosso.param.lampDistance, Assosso.param.lampAngle.min, Assosso.param.lampAngle.max, false);
             gfx.lineTo(0, 0);
             gfx.lineTo(0, -10);
             return gfx;
         };
+        Game.prototype.createLamp = function () {
+            var lamp = this.add.group();
+            var lampMask = this.drawLamp(0xffffff, 1);
+            lamp.addChild(lampMask);
+            lamp.lampMask = lampMask;
+            var beam = this.drawLamp(parseInt(Assosso.param.lampColor), Assosso.param.lampAlpha);
+            lamp.addChild(beam);
+            return lamp;
+        };
         Game.prototype.create = function () {
             var _this = this;
-            this.world.setBounds(0, 0, levelWidth, levelHeight);
-            this.stage.backgroundColor = 'rgb(32,38,51)';
-            var add = this.add;
-            this.grotteFond = add.group();
-            _.range(300, levelWidth, 900).forEach(function (x) { return add.image(x, 0, 'grotteFond' + _.random(4), undefined, _this.grotteFond); });
-            this.grotte = add.group();
-            _.range(0, levelWidth, 800).forEach(function (x) { return add.image(x, 0, 'grotte' + _.random(3), undefined, _this.grotte); });
+            Assosso.param = this.cache.getJSON('param');
+            this.world.setBounds(0, 0, Assosso.param.levelWidth, Assosso.param.levelHeight);
+            this.stage.backgroundColor = Assosso.param.backgroundColor;
             this.obstacles = createObstacles(this.game);
             this.player = createPlayer(this.game);
-            this.lamp = add.group();
-            var lampMask = this.drawLamp(0xffffff, 1);
-            this.lamp.addChild(lampMask);
-            this.obstacles.mask = lampMask;
-            var beam = this.drawLamp(0xffff00, 0.2);
-            this.lamp.addChild(beam);
+            this.lamp = this.createLamp();
             this.player.addChild(this.lamp);
+            this.obstacles.mask = this.lamp.lampMask;
             this.monster = createMonster(this.game);
-            this.front = add.group();
-            add.tileSprite(0, 0, levelWidth * (1 - frontFactor), this.world.bounds.height, 'stalactite', undefined, this.front);
+            Assosso.param.backgrounds.forEach(function (b) { return createBackground(_this.game, b); });
             this.obstacleDetector = this.add.sprite(0, 0, null);
             this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
-            this.obstacleDetector.body.setSize(100, 500, detectorDistance, -50);
+            this.obstacleDetector.body.setSize(Assosso.param.detectorWidth, Assosso.param.detectorHeight, Assosso.param.detectorOffset.x, Assosso.param.detectorOffset.y);
             this.obstacleDetector.body.moves = false;
             this.player.addChild(this.obstacleDetector);
             this.physics.startSystem(Phaser.Physics.ARCADE);
-            this.physics.arcade.gravity.y = 300;
+            this.physics.arcade.gravity.y = Assosso.param.gravity;
             this.cursors = this.input.keyboard.createCursorKeys();
             this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
             this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-            this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
             this.slideButton = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
             this.leSon.create();
         };
         Game.prototype.update = function () {
             var _this = this;
+            var sliding = this.time.now <= this.slidingUntil;
+            setBodySize(this.player, Assosso.param.playerBodySizes[sliding ? "slide" : "run"]);
             this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) {
                 obstacle.destroy();
-                _this.slowDownUntil = _this.time.now + obstacleSlowDownTime;
+                _this.slowDownUntil = _this.time.now + Assosso.param.obstacleSlowDownTime;
             });
             if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, function (detector, obstacle) {
                 if (!obstacle.detected) {
@@ -149,14 +144,11 @@ var Assosso;
             })) {
                 this.detectedObstacle = null;
             }
-            this.camera.x = this.monster.x + 180;
-            this.grotteFond.x = this.camera.x * 0.1;
-            this.grotte.x = this.camera.x * 0.0;
-            this.front.x = this.camera.x * frontFactor;
-            var sliding = this.time.now <= this.slidingUntil;
+            this.camera.x = this.monster.x - Assosso.param.monsterPosition.x;
+            Assosso.param.backgrounds.forEach(function (b) { return b.group.x = _this.camera.x * b.scrollMultiplier; });
             if (this.player.body.onFloor()) {
                 if (this.jumping) {
-                    this.slowDownUntil = this.time.now + jumpSlowDownTime;
+                    this.slowDownUntil = this.time.now + Assosso.param.jumpSlowDownTime;
                     this.jumping = false;
                     this.player.animations.play('reception');
                 }
@@ -165,7 +157,7 @@ var Assosso;
                     velocityX = 0;
                 }
                 else {
-                    velocityX = monsterSpeed * (this.rightButton.isDown ? 1.2 : 1);
+                    velocityX = Assosso.param.monsterSpeed * Assosso.param.runSpeed;
                     this.player.animations.play(sliding ? 'slide' : 'right');
                 }
                 this.player.body.velocity.x = velocityX;
@@ -175,25 +167,28 @@ var Assosso;
             }
             if (this.player.body.onFloor()) {
                 if (this.jumpButton.isDown) {
-                    this.player.body.velocity.x = monsterSpeed * jumpSpeedBoost;
-                    this.player.body.velocity.y = -500;
+                    this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.jumpSpeedBoost;
+                    this.player.body.velocity.y = Assosso.param.jumpYVelocity;
                     this.jumping = true;
                     this.leSon.footStep();
                 }
                 else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
-                    this.slidingUntil = this.time.now + slideTime;
-                    this.noSlideUntil = this.slidingUntil + slideCoolDown;
+                    this.slidingUntil = this.time.now + Assosso.param.slideTime;
+                    this.noSlideUntil = this.slidingUntil + Assosso.param.slideCoolDown;
                     this.player.animations.play('slide');
                 }
             }
-            var lampFrameOffset = lampFrameOffsets[this.player.frame];
+            var lampFrameOffset = Assosso.param.lampFrameOffsets[this.player.frame];
             this.lamp.x = lampFrameOffset.x;
             this.lamp.y = lampFrameOffset.y;
         };
         Game.prototype.render = function () {
-            //this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
-            // this.game.debug.body(this.obstacleDetector);
-            // this.game.debug.bodyInfo(this.player, 16, 24);
+            if (Assosso.param.debug) {
+                this.obstacles.forEach(this.game.debug.body, this.game.debug, false, 'green', false);
+                this.game.debug.body(this.monster, 'red', false);
+                this.game.debug.body(this.player, 'blue', false);
+                this.game.debug.body(this.obstacleDetector, 'yellow', false);
+            }
         };
         return Game;
     })(Phaser.State);

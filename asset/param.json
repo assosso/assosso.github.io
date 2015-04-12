@@ -1,0 +1,55 @@
+{
+  "monsterSpeed": 350,
+  "monsterPosition": { "x": -180, "y": 20 },
+  "runSpeed": 1.0,
+  "playerStartX": 600,
+  "playerBodySizes": {
+    "run":   { "width": 50, "height": 120, "x": 30, "y": 10 },
+    "slide": { "width": 80, "height": 60,  "x": 20, "y": 70 }
+  },
+  "playerAnimations": [
+    { "key": "right", "frames": [0, 1, 2], "frameRate": 10, "loop": true },
+    { "key": "jump", "frames": [3], "frameRate": 10, "loop": false },
+    { "key": "reception", "frames": [4, 5], "frameRate": 3, "loop": true },
+    { "key": "slide", "frames": [6, 7, 8], "frameRate": 10, "loop": true }
+  ],
+  "monsterBodySize": { "width": 390, "height": 350, "x": 0, "y": 60 },
+  "monsterAnimations": [ { "key": "right", "frames": null, "frameRate": 10, "loop": true } ],
+  "levelWidth": 24000,
+  "levelHeight": 600,
+  "backgroundColor": "rgb(32,38,51)",
+  "obstacleTypes": [
+    { "assetKey": "piege-a-loup", "action": "saute",                     "bodySize": { "width": 71,  "height": 47,  "x": 20, "y": 26 },
+      "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true } },
+    { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 } },
+    { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 } },
+    { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 } }
+  ],
+  "lampColor": "0xffff00",
+  "lampAlpha": 0.2,
+  "lampAngle": {"min":-0.625, "max":1.25},
+  "lampDistance": 200,
+  "lampOffset": {"x":72, "y":25},
+  "lampFrameOffsets":
+    [{"x":0, "y":0}, {"x":0, "y":3}, {"x":0, "y":0},
+     {"x":0, "y":-2},
+     {"x":0, "y":1000}, {"x":0, "y":1000},
+     {"x":-25, "y":48}, {"x":-25, "y":50}, {"x":-25, "y":49}],
+  "obstaclePositionConfig": { "x0": 2000, "deltaX": 900, "variation": 100 },
+  "detectorOffset": { "x": 600, "y": -50 },
+  "detectorWidth": 100,
+  "detectorHeight": 500,
+  "gravity": 1500,
+  "jumpYVelocity": -500,
+  "jumpSpeedBoost": 1.7,
+  "slideTime": 700,
+  "slideCoolDown": 300,
+  "obstacleSlowDownTime": 200,
+  "jumpSlowDownTime": 400,
+  "backgrounds": [
+    { "assetRegExp": "^grotte[0-9]+",     "positionConfig": { "x0": 0,   "deltaX": 800, "variation": 0 }, "scrollMultiplier": 0.0,  "inFront": false },
+    { "assetRegExp": "^grotteFond[0-9]+", "positionConfig": { "x0": 300, "deltaX": 900, "variation": 0 }, "scrollMultiplier": 0.1,  "inFront": false },
+    { "assetRegExp": "^stalactite$",      "positionConfig": { "x0": 0,   "deltaX": 600, "variation": 0 }, "scrollMultiplier": -0.1, "inFront": true }
+  ],
+  "debug": false
+}

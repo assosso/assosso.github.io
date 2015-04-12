@@ -27,7 +27,7 @@ module Assosso {
       );
 
       // Obstacles
-      Assosso.obstacleTypes.forEach(
+      Assosso.param.obstacleTypes.forEach(
         type => {
           type.audio = this.agame.add.audio(type.assetKey);
           type.actionAudio = this.agame.add.audio(type.action);
