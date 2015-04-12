@@ -5,8 +5,8 @@
   "accelSpeed": 1.1,
   "playerStartX": 600,
   "playerBodySizes": {
-    "run":   { "width": 50, "height": 120, "x": 30, "y": 10 },
-    "slide": { "width": 80, "height": 60,  "x": 20, "y": 70 }
+    "run":   { "width": 50, "height": 119, "x": 30, "y": 10 },
+    "slide": { "width": 80, "height": 59,  "x": 20, "y": 70 }
   },
   "playerAnimations": [
     { "key": "right", "frames": [0, 1, 2], "frameRate": 10, "loop": true },
@@ -60,5 +60,6 @@
 
   "musicVolume": 0.6,
   "ambienceVolume": 0.6,
-  "footstepVolume": 0.2
+  "footstepVolume": 0.2,
+  "slideVolume": 0.3
 }

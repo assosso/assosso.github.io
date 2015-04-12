@@ -26,12 +26,16 @@
     { "type": "audio", "key": "FS3",  "urls": ["asset/son/FS/Assosso_Footstep_Running_03.wav"] },
     { "type": "audio", "key": "FS4",  "urls": ["asset/son/FS/Assosso_Footstep_Running_04.wav"] },
 
-
     { "type": "audio", "key": "chauve-souris", "urls": ["asset/son/obstacle/chauve-souris.mp3"] },
     { "type": "audio", "key": "chauve-souris1", "urls": ["asset/son/obstacle/chauve-souris_batman.mp3"] },
     { "type": "audio", "key": "chauve-souris2", "urls": ["asset/son/obstacle/chauve-souris_pterodactile.mp3"] },
     { "type": "audio", "key": "chauve-souris3", "urls": ["asset/son/obstacle/chauve-souris_poulet.mp3"] },
     { "type": "audio", "key": "chauve-souris4", "urls": ["asset/son/obstacle/chauve-souris_perroquet.mp3"] },
+
+    { "type": "audio", "key": "Slide1",  "urls": ["asset/son/FS/Assosso_Character_Slide_01.wav"] },
+    { "type": "audio", "key": "Slide2",  "urls": ["asset/son/FS/Assosso_Character_Slide_02.wav"] },
+    { "type": "audio", "key": "Slide3",  "urls": ["asset/son/FS/Assosso_Character_Slide_03.wav"] },
+    { "type": "audio", "key": "Slide4",  "urls": ["asset/son/FS/Assosso_Character_Slide_04.wav"] },
 
     { "type": "audio", "key": "piege-a-loup",  "urls": ["asset/son/obstacle/piege-a-loup.mp3"] },
     { "type": "audio", "key": "piege-a-loup1",  "urls": ["asset/son/obstacle/piege-a-loup_pacman.mp3"] },
@@ -51,7 +55,7 @@
     { "type": "audio", "key": "pic2",           "urls": ["asset/son/obstacle/pic_lance.mp3"] },
     { "type": "audio", "key": "pic3",           "urls": ["asset/son/obstacle/pic_spike.mp3"] },
     { "type": "audio", "key": "pic4",           "urls": ["asset/son/obstacle/pic_toureiffel.mp3"] },
-    
+
 
     { "type": "audio", "key": "saute",         "urls": ["asset/son/obstacle/saute.mp3"] },
     { "type": "audio", "key": "glissade",      "urls": ["asset/son/obstacle/glissade.mp3"] },
