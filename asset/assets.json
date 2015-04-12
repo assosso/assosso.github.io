@@ -21,6 +21,11 @@
     { "type": "image", "key": "grotteFond3", "url": "asset/scenery/background_grotte_fond3.png" },
     { "type": "image", "key": "grotteFond4", "url": "asset/scenery/background_grotte_fond4.png" },
 
+    { "type": "audio", "key": "FS1",  "urls": ["asset/son/FS/Assosso_Footstep_Running_01.wav"] },
+    { "type": "audio", "key": "FS2",  "urls": ["asset/son/FS/Assosso_Footstep_Running_02.wav"] },
+    { "type": "audio", "key": "FS3",  "urls": ["asset/son/FS/Assosso_Footstep_Running_03.wav"] },
+    { "type": "audio", "key": "FS4",  "urls": ["asset/son/FS/Assosso_Footstep_Running_04.wav"] },
+
     { "type": "audio", "key": "piege-a-loup",  "urls": ["asset/son/obstacle/piege-a-loup.wav"] },
     { "type": "audio", "key": "rocher",        "urls": ["asset/son/obstacle/rocher.wav"] },
     { "type": "audio", "key": "pic",           "urls": ["asset/son/obstacle/pic.wav"] },

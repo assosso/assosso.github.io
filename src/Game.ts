@@ -8,12 +8,15 @@ module Assosso {
   interface Animation { key: string, frames: number[], frameRate: number, loop: boolean };
   interface ObstacleType {
     assetKey: string,
+    volume: number,
     action: string,
+    actionVolume: number,
     altitude?: number,
+    bodySize: BodySize,
+    animation: Animation,
     audio?: Phaser.Sound,
     actionAudio?: Phaser.Sound,
-    bodySize: BodySize,
-    animation: Animation
+    Nbplay?: number
   }
   interface PositionConfig {
     x0: number,
@@ -59,6 +62,8 @@ module Assosso {
     jumpSlowDownTime: number;
     backgrounds: BackgroundData[];
     debug: boolean;
+    musicVolume: number;
+    footstepVolume: number;
   }
   export var param: Param;
 
