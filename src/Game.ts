@@ -14,7 +14,7 @@ module Assosso {
     altitude?: number,
     bodySize: BodySize,
     animation: Animation,
-    audio?: Phaser.Sound,
+    audio?: Phaser.Sound[],
     actionAudio?: Phaser.Sound,
     Nbplay?: number
   }

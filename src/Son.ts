@@ -20,7 +20,7 @@ module Assosso {
     }
 
     createSounds(regexp, volume) {
-      var keys:string[] = (<any>this.agame.cache).getKeys(Phaser.Cache.SOUND).filter(k=>regexp.test(k));
+      var keys:string[] = (<any>this.agame.cache).getKeys(Phaser.Cache.SOUND).filter(k=>regexp.test(k)).sort();
       return keys.map(
         k => this.agame.add.audio(k, volume)
       );
@@ -34,7 +34,7 @@ module Assosso {
       Assosso.param.obstacleTypes.forEach(
         type => {
           type.Nbplay = 0;
-          type.audio = this.agame.add.audio(type.assetKey, type.volume);
+          type.audio = this.createSounds(new RegExp("^"+type.assetKey), type.volume); //this.agame.add.audio(type.assetKey, type.volume);
           type.actionAudio = this.agame.add.audio(type.action, type.actionVolume);
         }
       );
@@ -69,11 +69,15 @@ module Assosso {
       switch( type.Nbplay ){
         case 1:
           // nom obstacle + action
-          this.playInSequence(type.audio, type.actionAudio);
+          this.playInSequence(type.audio[0], type.actionAudio);
+        break;
+        case 1:
+          // nom obstacle
+          type.audio[0].play();
         break;
         default:
-          // nom obstacle
-          type.audio.play();
+          // nom obstacle etrange
+          (<any>_.sample(type.audio)).play();
         break;
 
       }

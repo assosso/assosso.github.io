@@ -14,7 +14,7 @@ var Assosso;
         };
         Son.prototype.createSounds = function (regexp, volume) {
             var _this = this;
-            var keys = this.agame.cache.getKeys(Phaser.Cache.SOUND).filter(function (k) { return regexp.test(k); });
+            var keys = this.agame.cache.getKeys(Phaser.Cache.SOUND).filter(function (k) { return regexp.test(k); }).sort();
             return keys.map(function (k) { return _this.agame.add.audio(k, volume); });
         };
         Son.prototype.create = function () {
@@ -23,7 +23,7 @@ var Assosso;
             this.slideSounds = this.createSounds(/^Slide/, Assosso.param.slideVolume);
             Assosso.param.obstacleTypes.forEach(function (type) {
                 type.Nbplay = 0;
-                type.audio = _this.agame.add.audio(type.assetKey, type.volume);
+                type.audio = _this.createSounds(new RegExp("^" + type.assetKey), type.volume);
                 type.actionAudio = _this.agame.add.audio(type.action, type.actionVolume);
             });
             this.gameTheme = this.agame.add.audio('game-theme');
@@ -47,10 +47,13 @@ var Assosso;
             type.Nbplay++;
             switch (type.Nbplay) {
                 case 1:
-                    this.playInSequence(type.audio, type.actionAudio);
+                    this.playInSequence(type.audio[0], type.actionAudio);
+                    break;
+                case 1:
+                    type.audio[0].play();
                     break;
                 default:
-                    type.audio.play();
+                    _.sample(type.audio).play();
                     break;
             }
         };
