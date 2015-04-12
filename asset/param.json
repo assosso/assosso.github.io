@@ -27,7 +27,6 @@
       "volume": 0.25, "actionVolume": 0.25 },
     { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
       "deathOffset": { "x": -100, "y": -20 },
-      "volume": 0.6, "actionVolume": 0.6 },
       "volume": 0.25, "actionVolume": 0.25 },
     { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
       "deathOffset": { "x": -88, "y": 0 },
@@ -68,5 +67,6 @@
   "musicVolume": 1.0,
   "ambienceVolume": 0.8,
   "footstepVolume": 0.4,
-  "slideVolume": 0.6
+  "slideVolume": 0.6,
+  "deathVolume": 1.0
 }

@@ -71,6 +71,7 @@ module Assosso {
     footstepVolume: number;
     slideVolume: number;
     deathAnimationFrameRate: number;
+    deathVolume: number;
   }
   export var param: Param;
 
@@ -285,6 +286,7 @@ module Assosso {
           this.world.add(deathSprite);
           deathSprite.animations.play('death');
           this.obstacles.mask = null;
+          this.leSon.death();
         }
       }
 

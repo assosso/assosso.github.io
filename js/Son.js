@@ -21,6 +21,7 @@ var Assosso;
             var _this = this;
             this.footSteps = this.createSounds(/^FS/, Assosso.param.footstepVolume);
             this.slideSounds = this.createSounds(/^Slide/, Assosso.param.slideVolume);
+            this.deathSound = this.agame.add.audio("death", Assosso.param.deathVolume);
             Assosso.param.obstacleTypes.forEach(function (type) {
                 type.Nbplay = 0;
                 type.audio = _this.createSounds(new RegExp("^" + type.assetKey), type.volume);
@@ -42,6 +43,9 @@ var Assosso;
             this.currentSlide = (this.currentSlide + 1) % this.slideSounds.length;
             this.slideSounds[this.currentSlide].play();
         };
+        Son.prototype.death = function () {
+            this.deathSound.play();
+        };
         Son.prototype.obstacle = function (obs) {
             var type = obs.obstacleType;
             type.Nbplay++;
@@ -49,7 +53,7 @@ var Assosso;
                 case 1:
                     this.playInSequence(type.audio[0], type.actionAudio);
                     break;
-                case 1:
+                case 2:
                     type.audio[0].play();
                     break;
                 default:
