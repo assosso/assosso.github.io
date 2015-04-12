@@ -187,6 +187,8 @@ module Assosso {
     lamp: Phaser.Group;
     obstacleDetector: Phaser.Sprite;
     detectedObstacle: Phaser.Sprite;
+    downLocation: Phaser.Point;
+    swipeCommand: string = null;
 
     preload() {
       this.load.pack('main', 'asset/assets.json');
@@ -260,6 +262,16 @@ module Assosso {
       this.slideButton = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
       this.leSon.create();
+
+      this.input.onDown.add(()=>this.downLocation = this.input.position.clone());
+      this.input.onUp.add(()=> {
+        var delta = Phaser.Point.subtract(this.input.position, this.downLocation);
+        if (delta.y > 50) {
+          this.swipeCommand = "down";
+        } else if (delta.y < -50) {
+          this.swipeCommand = "up";
+        }
+      });
     }
 
     update() {
@@ -329,17 +341,18 @@ module Assosso {
         }
 
         if (this.player.body.onFloor()) {
-          if (this.jumpButton.isDown) {
+          if (this.jumpButton.isDown || this.swipeCommand === 'up') {
             this.player.body.velocity.x = param.monsterSpeed * param.jumpSpeedBoost;
             this.player.body.velocity.y = param.jumpYVelocity;
             this.jumping = true;
             this.leSon.footStep();
-          } else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
+          } else if ((this.slideButton.isDown || this.swipeCommand === 'down') && !sliding && this.time.now > this.noSlideUntil) {
             this.slidingUntil = this.time.now + param.slideTime;
             this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
             this.leSon.slide();
             this.player.animations.play('slide');
           }
+          this.swipeCommand = null;
         }
 
         if (this.rightButton.isDown) {

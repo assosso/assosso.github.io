@@ -85,6 +85,7 @@ var Assosso;
             this.jumping = false;
             this.slidingUntil = 0;
             this.noSlideUntil = 0;
+            this.swipeCommand = null;
         }
         Game.prototype.preload = function () {
             this.load.pack('main', 'asset/assets.json');
@@ -135,6 +136,16 @@ var Assosso;
             this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
             this.slideButton = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
             this.leSon.create();
+            this.input.onDown.add(function () { return _this.downLocation = _this.input.position.clone(); });
+            this.input.onUp.add(function () {
+                var delta = Phaser.Point.subtract(_this.input.position, _this.downLocation);
+                if (delta.y > 50) {
+                    _this.swipeCommand = "down";
+                }
+                else if (delta.y < -50) {
+                    _this.swipeCommand = "up";
+                }
+            });
         };
         Game.prototype.update = function () {
             var _this = this;
@@ -196,18 +207,19 @@ var Assosso;
                     this.player.animations.play('jump');
                 }
                 if (this.player.body.onFloor()) {
-                    if (this.jumpButton.isDown) {
+                    if (this.jumpButton.isDown || this.swipeCommand === 'up') {
                         this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.jumpSpeedBoost;
                         this.player.body.velocity.y = Assosso.param.jumpYVelocity;
                         this.jumping = true;
                         this.leSon.footStep();
                     }
-                    else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
+                    else if ((this.slideButton.isDown || this.swipeCommand === 'down') && !sliding && this.time.now > this.noSlideUntil) {
                         this.slidingUntil = this.time.now + Assosso.param.slideTime;
                         this.noSlideUntil = this.slidingUntil + Assosso.param.slideCoolDown;
                         this.leSon.slide();
                         this.player.animations.play('slide');
                     }
+                    this.swipeCommand = null;
                 }
                 if (this.rightButton.isDown) {
                     this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.accelSpeed;
