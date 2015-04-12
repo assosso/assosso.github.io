@@ -34,6 +34,7 @@
     { "type": "audio", "key": "saute",         "urls": ["asset/son/obstacle/saute.wav"] },
     { "type": "audio", "key": "glissade",      "urls": ["asset/son/obstacle/glissade.wav"] },
 
-    { "type": "audio", "key": "game-theme",    "urls": ["asset/son/music/Music_Theme_Loop.ogg", "asset/son/music/Music_Theme_Loop.mp3"] }
+    { "type": "audio", "key": "game-theme",    "urls": ["asset/son/music/Music_Theme_Loop.ogg", "asset/son/music/Music_Theme_Loop.mp3"] },
+    { "type": "audio", "key": "game-ambience", "urls": ["asset/son/music/Assosso_Cave_Amb_Loop.ogg", "asset/son/music/Assosso_Cave_Amb_Loop.mp3"] }
   ]
 }

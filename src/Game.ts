@@ -63,6 +63,7 @@ module Assosso {
     backgrounds: BackgroundData[];
     debug: boolean;
     musicVolume: number;
+    ambienceVolume: number;
     footstepVolume: number;
   }
   export var param: Param;
@@ -103,7 +104,6 @@ module Assosso {
     monster.animations.play('right');
 
     var monsterBody: Phaser.Physics.Arcade.Body = monster.body;
-    monsterBody.velocity.x = param.monsterSpeed;
     monsterBody.allowGravity = false;
 
     setBodySize(monster, param.monsterBodySize);
@@ -241,6 +241,7 @@ module Assosso {
     }
 
     update() {
+      this.monster.body.velocity.x = param.monsterSpeed;
 
       var sliding = this.time.now <= this.slidingUntil;
       setBodySize(this.player, param.playerBodySizes[sliding ? "slide" : "run"]);

@@ -58,5 +58,6 @@
   "debug": false,
 
   "musicVolume": 0.5,
+  "ambienceVolume": 0.5,
   "footstepVolume": 0.1
 }

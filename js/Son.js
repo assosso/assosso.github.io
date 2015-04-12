@@ -19,8 +19,13 @@ var Assosso;
                 type.audio = _this.agame.add.audio(type.assetKey, type.volume);
                 type.actionAudio = _this.agame.add.audio(type.action, type.actionVolume);
             });
-            var gameTheme = this.agame.add.audio('game-theme');
-            gameTheme.loopFull(Assosso.param.musicVolume);
+            this.gameTheme = this.agame.add.audio('game-theme');
+            this.gameTheme.loopFull(Assosso.param.musicVolume);
+            this.gameAmbience = this.agame.add.audio('game-ambience');
+            this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
+        };
+        Son.prototype.ready = function () {
+            return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
         };
         Son.prototype.footStep = function () {
             this.currentFS = (this.currentFS + 1) % this.footSteps.length;

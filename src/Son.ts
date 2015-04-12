@@ -7,6 +7,9 @@ module Assosso {
     currentFS: number = 0;
     footSteps: Phaser.Sound[]=[];
 
+    gameTheme: Phaser.Sound;
+    gameAmbience: Phaser.Sound;
+
     constructor(public agame : Assosso.Game ){
 
     }
@@ -31,8 +34,15 @@ module Assosso {
       );
 
       // Musique
-      var gameTheme = this.agame.add.audio('game-theme');
-      gameTheme.loopFull(Assosso.param.musicVolume);
+      this.gameTheme = this.agame.add.audio('game-theme');
+      this.gameTheme.loopFull(Assosso.param.musicVolume);
+
+      this.gameAmbience = this.agame.add.audio('game-ambience');
+      this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
+    }
+
+    ready(): boolean {
+      return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
     }
 
     footStep(){

@@ -35,7 +35,6 @@ var Assosso;
         createAnimations(monster, Assosso.param.monsterAnimations);
         monster.animations.play('right');
         var monsterBody = monster.body;
-        monsterBody.velocity.x = Assosso.param.monsterSpeed;
         monsterBody.allowGravity = false;
         setBodySize(monster, Assosso.param.monsterBodySize);
         return monster;
@@ -129,6 +128,7 @@ var Assosso;
         };
         Game.prototype.update = function () {
             var _this = this;
+            this.monster.body.velocity.x = Assosso.param.monsterSpeed;
             var sliding = this.time.now <= this.slidingUntil;
             setBodySize(this.player, Assosso.param.playerBodySizes[sliding ? "slide" : "run"]);
             this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) {
