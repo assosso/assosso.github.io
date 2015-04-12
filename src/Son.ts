@@ -2,12 +2,12 @@
 /// <reference path="../lib/lodash.d.ts" />
 
 module Assosso {
+  const musicVolume: number = 0.5;
 
   export class Son {
 
     currentFS: number = 0;
     footSteps: Phaser.Sound[]=[];
-    Nbplay: number[]=[];
 
     constructor(public agame : Assosso.Game ){
 
@@ -36,7 +36,7 @@ module Assosso {
 
       // Musique
       var gameTheme = this.agame.add.audio('game-theme');
-      gameTheme.loopFull(0.6);
+      gameTheme.loopFull(musicVolume);
     }
 
     footStep(){

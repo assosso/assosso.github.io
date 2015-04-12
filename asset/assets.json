@@ -1,6 +1,6 @@
 {
   "main": [
-    { "type": "spritesheet", "key": "bob", "url": "asset/sprite_perso_run.png", "frameWidth": 92, "frameHeight": 130 },
+    { "type": "spritesheet", "key": "perso", "url": "asset/perso_sprites.png", "frameWidth": 106, "frameHeight": 129 },
     { "type": "spritesheet", "key": "monster", "url": "asset/sprite_monster_run.png", "frameWidth": 476, "frameHeight": 444 },
     { "type": "image", "key": "stalactite", "url": "asset/scenery/decor_stalactite.png" },
 

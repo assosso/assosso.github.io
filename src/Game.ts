@@ -10,18 +10,26 @@ module Assosso {
     { assetKey: "piege-a-loup", action: "saute" },
     { assetKey: "rocher", action: "saute" },
     { assetKey: "pic", action: "saute" },
-    { assetKey: "chauve-souris", action: "glissade" }
+    { assetKey: "chauve-souris", action: "glissade", altitude: 80 }
   ];
   const lampOffset: Phaser.Point = new Phaser.Point(72, 25);
   const lampAngle: number = 2.5;
   const lampDistance: number = 200;
-  const lampFrameOffsets: number[] = [0, 3, 0, -2, 1000, 1000];
+  const lampFrameOffsets: {x:number,y:number}[] =
+    [{x:0, y:0}, {x:0, y:3}, {x:0, y:0}, {x:0, y:-2},
+     {x:0, y:1000}, {x:0, y:1000},
+     {x:-25, y:48}, {x:-25, y:50}, {x:-25, y:49}];
   const obstacleInterval: number = 900;
   const obstacleVariation: number = 100;
   const detectorDistance: number = 600;
+  const jumpSpeedBoost: number = 1.7;
+  const slideTime: number = 400;
+  const slideCoolDown: number = 300;
+  const obstacleSlowDownTime: number = 200;
+  const jumpSlowDownTime: number = 500;
 
   function createPlayer(game: Phaser.Game): Phaser.Sprite {
-    var player = game.add.sprite(600, 0, 'bob');
+    var player = game.add.sprite(600, 0, 'perso');
     player.y = levelHeight - player.height;
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -34,6 +42,7 @@ module Assosso {
     player.animations.add('right', [0, 1, 2], 10, true);
     player.animations.add('jump', [3], 10, false);
     player.animations.add('reception', [4, 5], 3, true);
+    player.animations.add('slide', [6, 7, 8], 10, true);
 
     player.animations.play('right');
 
@@ -67,7 +76,7 @@ module Assosso {
                                           type.assetKey);
           obstacle.body.immovable = true;
           obstacle.body.allowGravity = false;
-          obstacle.y = levelHeight - obstacle.height;
+          obstacle.y = levelHeight - obstacle.height - ~~type.altitude;
           obstacle.animations.add('clap', null, 10, true);
           obstacle.animations.play('clap');
           obstacle.body.setSize(obstacle.width * 0.8, obstacle.height * 0.8, 0, obstacle.height * 0.2);
@@ -83,9 +92,12 @@ module Assosso {
     facing: string = 'right';
     slowDownUntil: number = 0;
     jumping: boolean = false;
+    slidingUntil: number = 0;
+    noSlideUntil: number = 0;
     cursors: Phaser.CursorKeys;
     jumpButton: Phaser.Key;
     rightButton: Phaser.Key;
+    slideButton: Phaser.Key;
     leftButton: Phaser.Key;
     grotte: Phaser.Group;
     grotteFond: Phaser.Group;
@@ -167,6 +179,7 @@ module Assosso {
       this.jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
       this.leftButton = this.input.keyboard.addKey(Phaser.Keyboard.LEFT);
       this.rightButton = this.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+      this.slideButton = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 
       this.leSon.create();
     }
@@ -175,7 +188,7 @@ module Assosso {
 
       this.physics.arcade.overlap(this.player, this.obstacles, (p, obstacle) => {
         obstacle.destroy();
-        this.slowDownUntil = this.time.now + 100;
+        this.slowDownUntil = this.time.now + obstacleSlowDownTime;
       });
 
       if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, (detector, obstacle) => {
@@ -193,21 +206,21 @@ module Assosso {
       this.grotte.x = this.camera.x * 0.0;
       this.front.x = this.camera.x * frontFactor;
 
+      var sliding = this.time.now <= this.slidingUntil;
 
       if (this.player.body.onFloor()) {
         if (this.jumping) {
-          this.player.body.velocity.x = monsterSpeed * 0.5;
-          this.slowDownUntil = this.time.now + 500;
+          this.slowDownUntil = this.time.now + jumpSlowDownTime;
           this.jumping = false;
           this.player.animations.play('reception');
         }
 
         var velocityX = 0;
         if (this.time.now <= this.slowDownUntil) {
-          velocityX = monsterSpeed * 0.0;
+          velocityX = 0;
         } else {
           velocityX = monsterSpeed * (this.rightButton.isDown?1.2:1);
-          this.player.animations.play('right');
+          this.player.animations.play(sliding ? 'slide' : 'right');
         }
 
         this.player.body.velocity.x = velocityX;
@@ -215,15 +228,22 @@ module Assosso {
         this.player.animations.play('jump');
       }
 
-      if (this.jumpButton.isDown && this.player.body.onFloor()) {
-        this.player.body.velocity.x = monsterSpeed * 1.7;
-        this.player.body.velocity.y = -500;
-        this.jumping = true;
-        this.leSon.footStep();
+      if (this.player.body.onFloor()) {
+        if (this.jumpButton.isDown) {
+          this.player.body.velocity.x = monsterSpeed * jumpSpeedBoost;
+          this.player.body.velocity.y = -500;
+          this.jumping = true;
+          this.leSon.footStep();
+        } else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
+          this.slidingUntil = this.time.now + slideTime;
+          this.noSlideUntil = this.slidingUntil + slideCoolDown;
+          this.player.animations.play('slide');
+        }
       }
 
-
-      this.lamp.y = lampFrameOffsets[this.player.frame];
+      var lampFrameOffset = lampFrameOffsets[this.player.frame];
+      this.lamp.x = lampFrameOffset.x;
+      this.lamp.y = lampFrameOffset.y;
     }
 
     render () {

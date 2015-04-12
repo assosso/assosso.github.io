@@ -2,12 +2,12 @@
 /// <reference path="../lib/lodash.d.ts" />
 var Assosso;
 (function (Assosso) {
+    var musicVolume = 0.5;
     var Son = (function () {
         function Son(agame) {
             this.agame = agame;
             this.currentFS = 0;
             this.footSteps = [];
-            this.Nbplay = [];
         }
         Son.prototype.preload = function () {
             var _this = this;
@@ -21,7 +21,7 @@ var Assosso;
                 type.actionAudio = _this.agame.add.audio(type.action);
             });
             var gameTheme = this.agame.add.audio('game-theme');
-            gameTheme.loopFull(0.6);
+            gameTheme.loopFull(musicVolume);
         };
         Son.prototype.footStep = function () {
             this.currentFS = this.currentFS + 1;
