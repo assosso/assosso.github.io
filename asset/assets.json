@@ -3,6 +3,11 @@
     { "type": "spritesheet", "key": "perso",      "url": "asset/perso_sprites.png",           "frameWidth": 106, "frameHeight": 129 },
     { "type": "spritesheet", "key": "monster",    "url": "asset/sprite_monster_run.png",      "frameWidth": 476, "frameHeight": 444 },
 
+    { "type": "spritesheet", "key": "death_piege-a-loup",  "url": "asset/death/death_piege-a-loup.png", "frameWidth": 100, "frameHeight": 112 },
+    { "type": "spritesheet", "key": "death_rocher",        "url": "asset/death/death_rocher.png",       "frameWidth": 261, "frameHeight": 78 },
+    { "type": "spritesheet", "key": "death_pic",           "url": "asset/death/death_pic.png",          "frameWidth": 188, "frameHeight": 76 },
+    { "type": "spritesheet", "key": "death_chauve-souris", "url": "asset/death/death_chauve-souris.png","frameWidth": 248, "frameHeight": 64 },
+
     { "type": "spritesheet", "key": "piege-a-loup",  "url": "asset/obstacles/piege-a-loup.png", "frameWidth": 105, "frameHeight": 73 },
     { "type": "spritesheet", "key": "rocher",        "url": "asset/obstacles/rocher.png", "frameWidth": 159, "frameHeight": 56 },
     { "type": "spritesheet", "key": "pic",           "url": "asset/obstacles/pic.png", "frameWidth": 44, "frameHeight": 76 },

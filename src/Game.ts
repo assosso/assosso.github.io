@@ -14,9 +14,13 @@ module Assosso {
     altitude?: number,
     bodySize: BodySize,
     animation: Animation,
+    deathOffset: Point,
+
     audio?: Phaser.Sound,
     actionAudio?: Phaser.Sound,
-    Nbplay?: number
+    Nbplay?: number,
+
+    deathSprite?: Phaser.Sprite,
   }
   interface PositionConfig {
     x0: number,
@@ -67,6 +71,7 @@ module Assosso {
     ambienceVolume: number;
     footstepVolume: number;
     slideVolume: number;
+    deathAnimationFrameRate: number;
   }
   export var param: Param;
 
@@ -120,24 +125,34 @@ module Assosso {
   }
 
   function createObstacles(game: Phaser.Game) {
-      var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
-      generateXPositions(param.obstaclePositionConfig,
-        x => {
-          var type = _.sample(param.obstacleTypes);
+    var obstacles = game.add.physicsGroup(Phaser.Physics.ARCADE);
+    generateXPositions(param.obstaclePositionConfig,
+      x => {
+        var type = _.sample(param.obstacleTypes);
 
-          var obstacle = obstacles.create(x, 0, type.assetKey);
-          obstacle.body.immovable = true;
-          obstacle.body.allowGravity = false;
-          obstacle.y = param.levelHeight - obstacle.height - ~~type.altitude;
-          if (type.animation) {
-            createAnimations(obstacle, [type.animation]);
-            obstacle.animations.play(type.animation.key);
-          }
-          setBodySize(obstacle, type.bodySize);
-          obstacle.obstacleType = type;
+        var obstacle = obstacles.create(x, 0, type.assetKey);
+        obstacle.body.immovable = true;
+        obstacle.body.allowGravity = false;
+        obstacle.y = param.levelHeight - obstacle.height - ~~type.altitude;
+        if (type.animation) {
+          createAnimations(obstacle, [type.animation]);
+          obstacle.animations.play(type.animation.key);
         }
-      );
-      return obstacles;
+        setBodySize(obstacle, type.bodySize);
+        obstacle.obstacleType = type;
+      }
+    );
+    return obstacles;
+  }
+
+  function createDeaths(game: Phaser.Game) {
+    var deaths: { [key: string]: Phaser.Sprite } = {};
+    param.obstacleTypes.forEach(
+      type => {
+        type.deathSprite = game.make.sprite(0, 0, 'death_' + type.assetKey);
+        type.deathSprite.animations.add('death', null, param.deathAnimationFrameRate, true);
+      }
+    );
   }
 
   function createBackground(game: Phaser.Game, data: BackgroundData) {
@@ -156,6 +171,7 @@ module Assosso {
 
   export class Game extends Phaser.State {
     player: Phaser.Sprite;
+    dead: boolean = false;
     monster: Phaser.Sprite;
     slowDownUntil: number = 0;
     jumping: boolean = false;
@@ -225,6 +241,8 @@ module Assosso {
 
       param.backgrounds.forEach((b)=>createBackground(this.game, b));
 
+      createDeaths(this.game);
+
       this.obstacleDetector = this.add.sprite(0, 0, null);
       this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
       this.obstacleDetector.body.setSize(param.detectorWidth, param.detectorHeight, param.detectorOffset.x, param.detectorOffset.y);
@@ -245,66 +263,87 @@ module Assosso {
     }
 
     update() {
-      this.monster.body.velocity.x = param.monsterSpeed;
+      if (this.dead) {
+        this.monster.body.velocity.x = 0;
+      } else {
+        this.monster.body.velocity.x = param.monsterSpeed;
+      }
 
       var sliding = this.time.now <= this.slidingUntil;
-      setBodySize(this.player, param.playerBodySizes[sliding ? "slide" : "run"]);
 
-      this.physics.arcade.overlap(this.player, this.obstacles, (p, obstacle) => {
-        obstacle.destroy();
-        this.slowDownUntil = this.time.now + param.obstacleSlowDownTime;
-      });
+      if (!this.dead) {
+        setBodySize(this.player, param.playerBodySizes[sliding ? "slide" : "run"]);
 
-      if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, (detector, obstacle) => {
-        if (!obstacle.detected) {
-          this.detectedObstacle = obstacle;
-          obstacle.detected = true;
-          this.leSon.obstacle(obstacle);
+        var foundObstacle: Phaser.Sprite = null;
+        if (this.physics.arcade.overlap(this.player, this.obstacles, (p, obstacle) => foundObstacle = obstacle)) {
+          this.monster.animations.stop();
+          this.player.renderable = false;
+          this.dead = true;
+          var type: ObstacleType = (<any>foundObstacle).obstacleType;
+          var deathSprite = type.deathSprite;
+          deathSprite.x = foundObstacle.x + type.deathOffset.x;
+          deathSprite.y = foundObstacle.y + type.deathOffset.y;
+          this.world.add(deathSprite);
+          deathSprite.animations.play('death');
+          this.obstacles.mask = null;
         }
-      })) {
-        this.detectedObstacle = null;
       }
 
-      this.camera.x = this.monster.x - param.monsterPosition.x;
+      if (this.dead) {
 
-      param.backgrounds.forEach((b)=>b.group.x = this.camera.x * b.scrollMultiplier);
-
-      if (this.player.body.onFloor()) {
-        if (this.jumping) {
-          this.slowDownUntil = this.time.now + param.jumpSlowDownTime;
-          this.jumping = false;
-          this.player.animations.play('reception');
-        }
-
-        var velocityX = 0;
-        if (this.time.now <= this.slowDownUntil) {
-          velocityX = 0;
-        } else {
-          velocityX = param.monsterSpeed * param.runSpeed;
-          this.player.animations.play(sliding ? 'slide' : 'right');
-        }
-
-        this.player.body.velocity.x = velocityX;
       } else {
-        this.player.animations.play('jump');
-      }
 
-      if (this.player.body.onFloor()) {
-        if (this.jumpButton.isDown) {
-          this.player.body.velocity.x = param.monsterSpeed * param.jumpSpeedBoost;
-          this.player.body.velocity.y = param.jumpYVelocity;
-          this.jumping = true;
-          this.leSon.footStep();
-        } else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
-          this.slidingUntil = this.time.now + param.slideTime;
-          this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
-          this.leSon.slide();
-          this.player.animations.play('slide');
+        if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, (detector, obstacle) => {
+          if (!obstacle.detected) {
+            this.detectedObstacle = obstacle;
+            obstacle.detected = true;
+            this.leSon.obstacle(obstacle);
+          }
+        })) {
+          this.detectedObstacle = null;
         }
-      }
 
-      if (this.rightButton.isDown) {
-        this.player.body.velocity.x = param.monsterSpeed * param.accelSpeed;
+        this.camera.x = this.monster.x - param.monsterPosition.x;
+
+        param.backgrounds.forEach((b)=>b.group.x = this.camera.x * b.scrollMultiplier);
+
+        if (this.player.body.onFloor()) {
+          if (this.jumping) {
+            this.slowDownUntil = this.time.now + param.jumpSlowDownTime;
+            this.jumping = false;
+            this.player.animations.play('reception');
+          }
+
+          var velocityX = 0;
+          if (this.time.now <= this.slowDownUntil) {
+            velocityX = 0;
+          } else {
+            velocityX = param.monsterSpeed * param.runSpeed;
+            this.player.animations.play(sliding ? 'slide' : 'right');
+          }
+
+          this.player.body.velocity.x = velocityX;
+        } else {
+          this.player.animations.play('jump');
+        }
+
+        if (this.player.body.onFloor()) {
+          if (this.jumpButton.isDown) {
+            this.player.body.velocity.x = param.monsterSpeed * param.jumpSpeedBoost;
+            this.player.body.velocity.y = param.jumpYVelocity;
+            this.jumping = true;
+            this.leSon.footStep();
+          } else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
+            this.slidingUntil = this.time.now + param.slideTime;
+            this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
+            this.leSon.slide();
+            this.player.animations.play('slide');
+          }
+        }
+
+        if (this.rightButton.isDown) {
+          this.player.body.velocity.x = param.monsterSpeed * param.accelSpeed;
+        }
       }
 
       var lampFrameOffset = param.lampFrameOffsets[this.player.frame];
