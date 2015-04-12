@@ -2,7 +2,6 @@
 /// <reference path="../lib/lodash.d.ts" />
 var Assosso;
 (function (Assosso) {
-    var musicVolume = 0.5;
     var Son = (function () {
         function Son(agame) {
             this.agame = agame;
@@ -10,31 +9,30 @@ var Assosso;
             this.footSteps = [];
         }
         Son.prototype.preload = function () {
-            var _this = this;
-            [1, 2, 3, 4].forEach(function (i) { return _this.agame.load.audio('FS' + i, 'asset/son/FS/Assosso_Footstep_Running_0' + i + '.wav'); });
         };
         Son.prototype.create = function () {
             var _this = this;
-            [1, 2, 3, 4].forEach(function (i) { return _this.footSteps[i] = _this.agame.add.audio('FS' + i); });
+            var footstepKeys = this.agame.cache.getKeys(Phaser.Cache.SOUND).filter(function (k) { return /^FS/.test(k); });
+            footstepKeys.forEach(function (k) { return _this.footSteps.push(_this.agame.add.audio(k, Assosso.param.footstepVolume)); });
             Assosso.param.obstacleTypes.forEach(function (type) {
-                type.audio = _this.agame.add.audio(type.assetKey);
-                type.actionAudio = _this.agame.add.audio(type.action);
+                type.Nbplay = 0;
+                type.audio = _this.agame.add.audio(type.assetKey, type.volume);
+                type.actionAudio = _this.agame.add.audio(type.action, type.actionVolume);
             });
-            var gameTheme = this.agame.add.audio('game-theme');
-            gameTheme.loopFull(musicVolume);
+            this.gameTheme = this.agame.add.audio('game-theme');
+            this.gameTheme.loopFull(Assosso.param.musicVolume);
+            this.gameAmbience = this.agame.add.audio('game-ambience');
+            this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
+        };
+        Son.prototype.ready = function () {
+            return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
         };
         Son.prototype.footStep = function () {
-            this.currentFS = this.currentFS + 1;
-            if (this.currentFS > 4) {
-                this.currentFS = 1;
-            }
+            this.currentFS = (this.currentFS + 1) % this.footSteps.length;
             this.footSteps[this.currentFS].play();
         };
         Son.prototype.obstacle = function (obs) {
             var type = obs.obstacleType;
-            if (typeof type.Nbplay === 'undefined') {
-                type.Nbplay = 0;
-            }
             type.Nbplay++;
             switch (type.Nbplay) {
                 case 1:

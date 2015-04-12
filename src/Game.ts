@@ -8,12 +8,15 @@ module Assosso {
   interface Animation { key: string, frames: number[], frameRate: number, loop: boolean };
   interface ObstacleType {
     assetKey: string,
+    volume: number,
     action: string,
+    actionVolume: number,
     altitude?: number,
+    bodySize: BodySize,
+    animation: Animation,
     audio?: Phaser.Sound,
     actionAudio?: Phaser.Sound,
-    bodySize: BodySize,
-    animation: Animation
+    Nbplay?: number
   }
   interface PositionConfig {
     x0: number,
@@ -60,7 +63,9 @@ module Assosso {
     jumpSlowDownTime: number;
     backgrounds: BackgroundData[];
     debug: boolean;
-
+    musicVolume: number;
+    ambienceVolume: number;
+    footstepVolume: number;
   }
   export var param: Param;
 
@@ -100,7 +105,6 @@ module Assosso {
     monster.animations.play('right');
 
     var monsterBody: Phaser.Physics.Arcade.Body = monster.body;
-    monsterBody.velocity.x = param.monsterSpeed;
     monsterBody.allowGravity = false;
 
     setBodySize(monster, param.monsterBodySize);
@@ -240,6 +244,7 @@ module Assosso {
     }
 
     update() {
+      this.monster.body.velocity.x = param.monsterSpeed;
 
       var sliding = this.time.now <= this.slidingUntil;
       setBodySize(this.player, param.playerBodySizes[sliding ? "slide" : "run"]);

@@ -21,10 +21,14 @@
   "backgroundColor": "rgb(32,38,51)",
   "obstacleTypes": [
     { "assetKey": "piege-a-loup", "action": "saute",                     "bodySize": { "width": 71,  "height": 47,  "x": 20, "y": 26 },
-      "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true } },
-    { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 } },
-    { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 } },
-    { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 } }
+      "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true },
+      "volume": 1.0, "actionVolume": 1.0 },
+    { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
+      "volume": 1.0, "actionVolume": 1.0 },
+    { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
+      "volume": 1.0, "actionVolume": 1.0 },
+    { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 },
+      "volume": 1.0, "actionVolume": 1.0 }
   ],
   "lampColor": "0xffff00",
   "lampAlpha": 0.2,
@@ -52,5 +56,9 @@
     { "assetRegExp": "^grotteFond[0-9]+", "positionConfig": { "x0": 300, "deltaX": 900, "variation": 0 }, "scrollMultiplier": 0.1,  "inFront": false },
     { "assetRegExp": "^stalactite$",      "positionConfig": { "x0": 0,   "deltaX": 600, "variation": 0 }, "scrollMultiplier": -0.1, "inFront": true }
   ],
-  "debug": false
+  "debug": false,
+
+  "musicVolume": 0.5,
+  "ambienceVolume": 0.5,
+  "footstepVolume": 0.1
 }

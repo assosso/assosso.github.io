@@ -2,56 +2,57 @@
 /// <reference path="../lib/lodash.d.ts" />
 
 module Assosso {
-  const musicVolume: number = 0.5;
-
   export class Son {
 
     currentFS: number = 0;
     footSteps: Phaser.Sound[]=[];
+
+    gameTheme: Phaser.Sound;
+    gameAmbience: Phaser.Sound;
 
     constructor(public agame : Assosso.Game ){
 
     }
 
     preload(){
-      // Footstep
-      [1,2,3,4].forEach(
-        i => this.agame.load.audio('FS' + i, 'asset/son/FS/Assosso_Footstep_Running_0' + i + '.wav')
-      );
     }
 
     create(){
       // Footstep
-      [1,2,3,4].forEach(
-        i => this.footSteps[i] = this.agame.add.audio('FS' + i)
+      var footstepKeys:string[] = (<any>this.agame.cache).getKeys(Phaser.Cache.SOUND).filter(k=>/^FS/.test(k));
+      footstepKeys.forEach(
+        k => this.footSteps.push(this.agame.add.audio(k, Assosso.param.footstepVolume))
       );
 
       // Obstacles
       Assosso.param.obstacleTypes.forEach(
         type => {
-          type.audio = this.agame.add.audio(type.assetKey);
-          type.actionAudio = this.agame.add.audio(type.action);
+          type.Nbplay = 0;
+          type.audio = this.agame.add.audio(type.assetKey, type.volume);
+          type.actionAudio = this.agame.add.audio(type.action, type.actionVolume);
         }
       );
 
       // Musique
-      var gameTheme = this.agame.add.audio('game-theme');
-      gameTheme.loopFull(musicVolume);
+      this.gameTheme = this.agame.add.audio('game-theme');
+      this.gameTheme.loopFull(Assosso.param.musicVolume);
+
+      this.gameAmbience = this.agame.add.audio('game-ambience');
+      this.gameAmbience.loopFull(Assosso.param.ambienceVolume);
+    }
+
+    ready(): boolean {
+      return this.gameTheme.isDecoded && this.gameAmbience.isDecoded;
     }
 
     footStep(){
       // enchainement des 4 footStep different
-      this.currentFS = this.currentFS + 1;
-      if (this.currentFS > 4) {this.currentFS = 1;}
+      this.currentFS = (this.currentFS + 1) % this.footSteps.length;
       this.footSteps[this.currentFS].play();
-//      this.footSteps[Math.ceil(Math.random() * 4)].play();
     }
 
     obstacle( obs: any ){
       var type = obs.obstacleType;
-      if (typeof type.Nbplay === 'undefined') {
-        type.Nbplay = 0;
-      }
 
       type.Nbplay++;
       switch( type.Nbplay ){
