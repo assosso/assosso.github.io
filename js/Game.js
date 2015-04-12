@@ -59,6 +59,13 @@ var Assosso;
         });
         return obstacles;
     }
+    function createDeaths(game) {
+        var deaths = {};
+        Assosso.param.obstacleTypes.forEach(function (type) {
+            type.deathSprite = game.make.sprite(0, 0, 'death_' + type.assetKey);
+            type.deathSprite.animations.add('death', null, Assosso.param.deathAnimationFrameRate, true);
+        });
+    }
     function createBackground(game, data) {
         var group = game.add.group(null);
         group.classType = Phaser.Image;
@@ -73,6 +80,7 @@ var Assosso;
         __extends(Game, _super);
         function Game() {
             _super.apply(this, arguments);
+            this.dead = false;
             this.slowDownUntil = 0;
             this.jumping = false;
             this.slidingUntil = 0;
@@ -113,6 +121,7 @@ var Assosso;
             this.obstacles.mask = this.lamp.lampMask;
             this.monster = createMonster(this.game);
             Assosso.param.backgrounds.forEach(function (b) { return createBackground(_this.game, b); });
+            createDeaths(this.game);
             this.obstacleDetector = this.add.sprite(0, 0, null);
             this.physics.enable(this.obstacleDetector, Phaser.Physics.ARCADE);
             this.obstacleDetector.body.setSize(Assosso.param.detectorWidth, Assosso.param.detectorHeight, Assosso.param.detectorOffset.x, Assosso.param.detectorOffset.y);
@@ -129,59 +138,79 @@ var Assosso;
         };
         Game.prototype.update = function () {
             var _this = this;
-            this.monster.body.velocity.x = Assosso.param.monsterSpeed;
-            var sliding = this.time.now <= this.slidingUntil;
-            setBodySize(this.player, Assosso.param.playerBodySizes[sliding ? "slide" : "run"]);
-            this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) {
-                obstacle.destroy();
-                _this.slowDownUntil = _this.time.now + Assosso.param.obstacleSlowDownTime;
-            });
-            if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, function (detector, obstacle) {
-                if (!obstacle.detected) {
-                    _this.detectedObstacle = obstacle;
-                    obstacle.detected = true;
-                    _this.leSon.obstacle(obstacle);
-                }
-            })) {
-                this.detectedObstacle = null;
-            }
-            this.camera.x = this.monster.x - Assosso.param.monsterPosition.x;
-            Assosso.param.backgrounds.forEach(function (b) { return b.group.x = _this.camera.x * b.scrollMultiplier; });
-            if (this.player.body.onFloor()) {
-                if (this.jumping) {
-                    this.slowDownUntil = this.time.now + Assosso.param.jumpSlowDownTime;
-                    this.jumping = false;
-                    this.player.animations.play('reception');
-                }
-                var velocityX = 0;
-                if (this.time.now <= this.slowDownUntil) {
-                    velocityX = 0;
-                }
-                else {
-                    velocityX = Assosso.param.monsterSpeed * Assosso.param.runSpeed;
-                    this.player.animations.play(sliding ? 'slide' : 'right');
-                }
-                this.player.body.velocity.x = velocityX;
+            if (this.dead) {
+                this.monster.body.velocity.x = 0;
             }
             else {
-                this.player.animations.play('jump');
+                this.monster.body.velocity.x = Assosso.param.monsterSpeed;
             }
-            if (this.player.body.onFloor()) {
-                if (this.jumpButton.isDown) {
-                    this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.jumpSpeedBoost;
-                    this.player.body.velocity.y = Assosso.param.jumpYVelocity;
-                    this.jumping = true;
-                    this.leSon.footStep();
-                }
-                else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
-                    this.slidingUntil = this.time.now + Assosso.param.slideTime;
-                    this.noSlideUntil = this.slidingUntil + Assosso.param.slideCoolDown;
-                    this.leSon.slide();
-                    this.player.animations.play('slide');
+            var sliding = this.time.now <= this.slidingUntil;
+            if (!this.dead) {
+                setBodySize(this.player, Assosso.param.playerBodySizes[sliding ? "slide" : "run"]);
+                var foundObstacle = null;
+                if (this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) { return foundObstacle = obstacle; })) {
+                    this.monster.animations.stop();
+                    this.player.renderable = false;
+                    this.dead = true;
+                    var type = foundObstacle.obstacleType;
+                    var deathSprite = type.deathSprite;
+                    deathSprite.x = foundObstacle.x + type.deathOffset.x;
+                    deathSprite.y = foundObstacle.y + type.deathOffset.y;
+                    this.world.add(deathSprite);
+                    deathSprite.animations.play('death');
+                    this.obstacles.mask = null;
                 }
             }
-            if (this.rightButton.isDown) {
-                this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.accelSpeed;
+            if (this.dead) {
+            }
+            else {
+                if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, function (detector, obstacle) {
+                    if (!obstacle.detected) {
+                        _this.detectedObstacle = obstacle;
+                        obstacle.detected = true;
+                        _this.leSon.obstacle(obstacle);
+                    }
+                })) {
+                    this.detectedObstacle = null;
+                }
+                this.camera.x = this.monster.x - Assosso.param.monsterPosition.x;
+                Assosso.param.backgrounds.forEach(function (b) { return b.group.x = _this.camera.x * b.scrollMultiplier; });
+                if (this.player.body.onFloor()) {
+                    if (this.jumping) {
+                        this.slowDownUntil = this.time.now + Assosso.param.jumpSlowDownTime;
+                        this.jumping = false;
+                        this.player.animations.play('reception');
+                    }
+                    var velocityX = 0;
+                    if (this.time.now <= this.slowDownUntil) {
+                        velocityX = 0;
+                    }
+                    else {
+                        velocityX = Assosso.param.monsterSpeed * Assosso.param.runSpeed;
+                        this.player.animations.play(sliding ? 'slide' : 'right');
+                    }
+                    this.player.body.velocity.x = velocityX;
+                }
+                else {
+                    this.player.animations.play('jump');
+                }
+                if (this.player.body.onFloor()) {
+                    if (this.jumpButton.isDown) {
+                        this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.jumpSpeedBoost;
+                        this.player.body.velocity.y = Assosso.param.jumpYVelocity;
+                        this.jumping = true;
+                        this.leSon.footStep();
+                    }
+                    else if (this.slideButton.isDown && !sliding && this.time.now > this.noSlideUntil) {
+                        this.slidingUntil = this.time.now + Assosso.param.slideTime;
+                        this.noSlideUntil = this.slidingUntil + Assosso.param.slideCoolDown;
+                        this.leSon.slide();
+                        this.player.animations.play('slide');
+                    }
+                }
+                if (this.rightButton.isDown) {
+                    this.player.body.velocity.x = Assosso.param.monsterSpeed * Assosso.param.accelSpeed;
+                }
             }
             var lampFrameOffset = Assosso.param.lampFrameOffsets[this.player.frame];
             this.lamp.x = lampFrameOffset.x;
