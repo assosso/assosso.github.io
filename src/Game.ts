@@ -310,6 +310,7 @@ module Assosso {
 
         var foundObstacle: Phaser.Sprite = null;
         if (this.physics.arcade.overlap(this.player, this.obstacles, (p, obstacle) => foundObstacle = obstacle)) {
+          // Collision obstacle
           this.monster.animations.stop();
           this.player.renderable = false;
           this.dead = true;
@@ -362,13 +363,16 @@ module Assosso {
           this.player.animations.play('jump');
         }
 
+        // Actions
         if (this.player.body.onFloor()) {
           if (this.jumpButton.isDown || this.swipeCommand === 'up') {
+            // Saut
             this.player.body.velocity.x = param.monsterSpeed * param.jumpSpeedBoost;
             this.player.body.velocity.y = param.jumpYVelocity;
             this.jumping = true;
             this.leSon.footStep();
           } else if ((this.slideButton.isDown || this.swipeCommand === 'down') && !sliding && this.time.now > this.noSlideUntil) {
+            // Glissade
             this.slidingUntil = this.time.now + param.slideTime;
             this.noSlideUntil = this.slidingUntil + param.slideCoolDown;
             this.leSon.slide();
@@ -377,6 +381,7 @@ module Assosso {
           this.swipeCommand = null;
         }
 
+        // Accceleration
         if (this.rightButton.isDown) {
           this.player.body.velocity.x = param.monsterSpeed * param.accelSpeed;
         }
