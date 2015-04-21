@@ -72,6 +72,7 @@ module Assosso {
     slideVolume: number;
     deathAnimationFrameRate: number;
     deathVolume: number;
+    scoreDivision: number;
   }
   export var param: Param;
 
@@ -190,6 +191,7 @@ module Assosso {
     detectedObstacle: Phaser.Sprite;
     downLocation: Phaser.Point;
     swipeCommand: string = null;
+    scoreText: Phaser.Text;
 
     preload() {
       if (this.cache.checkJSONKey('param'))
@@ -286,6 +288,12 @@ module Assosso {
           this.swipeCommand = "up";
         }
       });
+
+      //var uigrp = this.add.group();
+      this.scoreText = this.game.add.text(100,100,"TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST",{ font:"bold 16px Arial" });
+      this.scoreText.fixedToCamera = true;
+      this.scoreText.addColor( "#22E122",0);
+
     }
 
     shutdown() {
@@ -310,8 +318,9 @@ module Assosso {
 
         var foundObstacle: Phaser.Sprite = null;
         if (this.physics.arcade.overlap(this.player, this.obstacles, (p, obstacle) => foundObstacle = obstacle)) {
-          // Collision obstacle
+          // Collision obstacle = dead
           this.monster.animations.stop();
+          this.scoreText.text = "Score : " + Math.floor( (this.player.x  - param.playerStartX) / param.scoreDivision ) + " mètres    - cliquer ou toucher l'ecran pour recommencer";
           this.player.renderable = false;
           this.dead = true;
           var type: ObstacleType = (<any>foundObstacle).obstacleType;
@@ -328,7 +337,9 @@ module Assosso {
       if (this.dead) {
 
       } else {
+        this.scoreText.text = "Score : " + Math.floor( (this.player.x  - param.playerStartX) / param.scoreDivision );
 
+        // Detection obstacle pour warning
         if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, (detector, obstacle) => {
           if (!obstacle.detected) {
             this.detectedObstacle = obstacle;
@@ -344,12 +355,15 @@ module Assosso {
         param.backgrounds.forEach((b)=>b.group.x = this.camera.x * b.scrollMultiplier);
 
         if (this.player.body.onFloor()) {
+
+          // reception saut
           if (this.jumping) {
             this.slowDownUntil = this.time.now + param.jumpSlowDownTime;
             this.jumping = false;
             this.player.animations.play('reception');
           }
 
+          // vitesse
           var velocityX = 0;
           if (this.time.now <= this.slowDownUntil) {
             velocityX = 0;
@@ -360,6 +374,7 @@ module Assosso {
 
           this.player.body.velocity.x = velocityX;
         } else {
+          // saut
           this.player.animations.play('jump');
         }
 

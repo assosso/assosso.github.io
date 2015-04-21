@@ -25,10 +25,10 @@
       "animation": { "key": "clap", "frames": null, "frameRate": 10, "loop": true },
       "deathOffset": { "x": -72, "y": -39 },
       "volume": 0.6, "actionVolume": 0.6},
-    { "assetKey": "rocher", "action": "saute",                           "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
+    { "assetKey": "rocher",       "action": "saute",                     "bodySize": { "width": 109, "height": 37,  "x": 31, "y": 22 },
       "deathOffset": { "x": -100, "y": -20 },
       "volume": 0.6, "actionVolume": 0.6 },
-    { "assetKey": "pic", "action": "saute",                              "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
+    { "assetKey": "pic",          "action": "saute",                     "bodySize": { "width": 35,  "height": 60,  "x": 8,  "y": 21 },
       "deathOffset": { "x": -88, "y": 0 },
       "volume": 0.6, "actionVolume": 0.6 },
     { "assetKey": "chauve-souris", "action": "glissade", "altitude": 80, "bodySize": { "width": 45,  "height": 35,  "x": 10, "y": 13 },
@@ -68,5 +68,6 @@
   "ambienceVolume": 0.6,
   "footstepVolume": 0.2,
   "slideVolume": 0.3,
-  "deathVolume": 1.0
+  "deathVolume": 1.0,
+  "scoreDivision": 100
 }
