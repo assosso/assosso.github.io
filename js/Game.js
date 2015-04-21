@@ -157,6 +157,9 @@ var Assosso;
                     _this.swipeCommand = "up";
                 }
             });
+            this.scoreText = this.game.add.text(100, 100, "TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST", { font: "bold 16px Arial" });
+            this.scoreText.fixedToCamera = true;
+            this.scoreText.addColor("#22E122", 0);
         };
         Game.prototype.shutdown = function () {
             this.monster.destroy();
@@ -179,6 +182,7 @@ var Assosso;
                 var foundObstacle = null;
                 if (this.physics.arcade.overlap(this.player, this.obstacles, function (p, obstacle) { return foundObstacle = obstacle; })) {
                     this.monster.animations.stop();
+                    this.scoreText.text = "Score : " + Math.floor((this.player.x - Assosso.param.playerStartX) / Assosso.param.scoreDivision) + " mètres    - cliquer ou toucher l'ecran pour recommencer";
                     this.player.renderable = false;
                     this.dead = true;
                     var type = foundObstacle.obstacleType;
@@ -194,6 +198,7 @@ var Assosso;
             if (this.dead) {
             }
             else {
+                this.scoreText.text = "Score : " + Math.floor((this.player.x - Assosso.param.playerStartX) / Assosso.param.scoreDivision);
                 if (!this.physics.arcade.overlap(this.obstacleDetector, this.obstacles, function (detector, obstacle) {
                     if (!obstacle.detected) {
                         _this.detectedObstacle = obstacle;
